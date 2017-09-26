@@ -3,15 +3,17 @@ package com.android.jmaxime.factory;
 import android.annotation.SuppressLint;
 import android.support.annotation.LayoutRes;
 import android.util.Log;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import com.android.jmaxime.adapter.RecyclerViewHolder;
+import com.android.jmaxime.viewholder.JRecyclerViewHolder;
 import com.android.jmaxime.annotations.BindLayoutRes;
 import com.android.jmaxime.interfaces.IBaseCommunication;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 
 /**
  * @author Maxime Jallu
@@ -23,21 +25,27 @@ public class ViewHolderFactory<T> {
 
     private static final String TAG = ViewHolderFactory.class.getName();
     private WeakReference<IBaseCommunication> mCommunication;
-    private Class<? extends RecyclerViewHolder<T>> mViewHolderType;
-    private HashMap<Integer, Class<? extends RecyclerViewHolder<T>>> mClassHashMap;
+    private Class<? extends JRecyclerViewHolder<T>> mViewHolderType;
+    private SparseArray<Class<? extends JRecyclerViewHolder<T>>> mClassHashMap;
 
     public ViewHolderFactory() {
         this(null);
     }
 
     @SuppressLint("UseSparseArrays")
-    public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType) {
-        mViewHolderType = viewHolderType;
-        mClassHashMap = new HashMap<>();
+    public ViewHolderFactory(Class<? extends JRecyclerViewHolder<T>> viewHolderType) {
+        this(viewHolderType, null);
     }
 
-    public final RecyclerViewHolder<T> createVH(View view, int viewType) {
-        RecyclerViewHolder<T> ret = getInstance(view, viewType);
+    public ViewHolderFactory(Class<? extends JRecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback) {
+        mViewHolderType = viewHolderType;
+        mClassHashMap = new SparseArray<>();
+        setCommunication(callback);
+    }
+
+    public final JRecyclerViewHolder<T> createVH(ViewGroup view, int viewType) {
+        JRecyclerViewHolder<T> ret = getInstance(LayoutInflater.from(view.getContext())
+                                                               .inflate(getLayoutRes(viewType), view, false), viewType);
         if (ret != null) {
             ret.setCommunication(getInterfaceCallback());
         }
@@ -45,8 +53,8 @@ public class ViewHolderFactory<T> {
     }
 
     @SuppressWarnings("TryWithIdenticalCatches")
-    private RecyclerViewHolder<T> getInstance(View view, int viewType) {
-        RecyclerViewHolder<T> ret = null;
+    private JRecyclerViewHolder<T> getInstance(View view, int viewType) {
+        JRecyclerViewHolder<T> ret = null;
         try {
             ret = getViewHolderType(viewType).getConstructor(View.class).newInstance(view);
         } catch (InstantiationException e) {
@@ -72,9 +80,9 @@ public class ViewHolderFactory<T> {
         return i;
     }
 
-    protected Class<? extends RecyclerViewHolder<T>> getViewHolderType(int viewType) {
-        Class<? extends RecyclerViewHolder<T>> vm = mViewHolderType;
-        if (mClassHashMap.containsKey(viewType)) {
+    protected Class<? extends JRecyclerViewHolder<T>> getViewHolderType(int viewType) {
+        Class<? extends JRecyclerViewHolder<T>> vm = mViewHolderType;
+        if (mClassHashMap.indexOfKey(viewType) > -1) {
             vm = mClassHashMap.get(viewType);
         }
         return vm;
@@ -92,7 +100,7 @@ public class ViewHolderFactory<T> {
         return getViewHolderType(viewType).getAnnotation(BindLayoutRes.class).value();
     }
 
-    public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder){
+    public void putViewType(int viewType, Class<? extends JRecyclerViewHolder<T>> viewHolder){
         mClassHashMap.put(viewType, viewHolder);
     }
 }
