@@ -9,7 +9,7 @@ import com.android.jmaxime.factory.ViewHolderFactory;
 import com.android.jmaxime.interfaces.IAdapterChanged;
 import com.android.jmaxime.interfaces.IBaseCommunication;
 import com.android.jmaxime.interfaces.IViewType;
-import com.android.jmaxime.viewholder.JRecyclerViewHolder;
+import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
 import java.security.AccessControlException;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.List;
  * Use this Class for : <br/>
  * ... {DOCUMENTATION}
  */
-public class RecyclerAdapter<T> extends RecyclerView.Adapter<JRecyclerViewHolder<T>> {
+public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<T>> {
 
     private List<T> mTList;
     private ViewHolderFactory<T> mFactory;
@@ -38,19 +38,19 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<JRecyclerViewHolder
         this(new ArrayList<>(), factory);
     }
 
-    public RecyclerAdapter(Class<? extends JRecyclerViewHolder<T>> viewHolderType) {
+    public RecyclerAdapter(Class<? extends RecyclerViewHolder<T>> viewHolderType) {
         this(new ArrayList<>(), viewHolderType, null);
     }
 
-    public RecyclerAdapter(Class<? extends JRecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
+    public RecyclerAdapter(Class<? extends RecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
         this(new ArrayList<>(), viewHolderType, callback);
     }
 
-    public RecyclerAdapter(List<T> TList, Class<? extends JRecyclerViewHolder<T>> viewHolderType) {
+    public RecyclerAdapter(List<T> TList, Class<? extends RecyclerViewHolder<T>> viewHolderType) {
         this(TList, viewHolderType, null);
     }
 
-    public RecyclerAdapter(List<T> TList, Class<? extends JRecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
+    public RecyclerAdapter(List<T> TList, Class<? extends RecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
         this(TList, new ViewHolderFactory<>(viewHolderType, callback));
     }
 
@@ -65,7 +65,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<JRecyclerViewHolder
     }
 
     @Override
-    public JRecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mFactory == null) {
             throw new AccessControlException("mFactory is not instancied. thanks use setFactory() method.");
         }
@@ -75,7 +75,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<JRecyclerViewHolder
 
 
     @Override
-    public void onBindViewHolder(JRecyclerViewHolder<T> holder, int position) {
+    public void onBindViewHolder(RecyclerViewHolder<T> holder, int position) {
         holder.setItem(getItem(position));
         holder.setBound(false);
         holder.bind(holder.getItem());
@@ -105,7 +105,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<JRecyclerViewHolder
         return super.getItemViewType(position);
     }
 
-    public void putViewType(int viewType, Class<? extends JRecyclerViewHolder<T>> viewHolder){
+    public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder){
         mFactory.putViewType(viewType, viewHolder);
     }
 

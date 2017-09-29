@@ -2,7 +2,7 @@ package com.android.jmaxime.adapters;
 
 import com.android.jmaxime.factory.ViewHolderFactory;
 import com.android.jmaxime.interfaces.ViewCheckableCallback;
-import com.android.jmaxime.viewholder.JRecyclerViewHolder;
+import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,7 @@ public class CheckableAdapter<T> extends RecyclerAdapter<T> implements ViewCheck
 
     private HashMap<String, Boolean> mCheckedMap = new HashMap<>();
 
-    public CheckableAdapter(Class<? extends JRecyclerViewHolder<T>> viewHolderType) {
+    public CheckableAdapter(Class<? extends RecyclerViewHolder<T>> viewHolderType) {
         super(viewHolderType);
         setCommunication(this);
     }
