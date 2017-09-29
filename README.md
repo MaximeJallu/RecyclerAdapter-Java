@@ -1,3 +1,12 @@
+# Gradle 
+dowload last release here : https://github.com/MaximeJallu/RecyclerAdapter-Java/releases
+compile ('libs/recycleradapter-{version}.aar', {
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.jakewharton', module: 'butterknife'
+        exclude group: 'com.squareup.picasso', module: 'picasso'
+    })
+    
 # RecyclerAdapter (Easy sample method)
 CustomerViewHolder.class :
 ```java
