@@ -13,7 +13,7 @@ import android.support.v7.widget.RecyclerView
  * @param <T> Type d'item de la liste
  * @param <U> Type de ViewHolder doit extends de RecyclerViewHolder<T>
  **/
-abstract class ArrayRecyclerAdapter<T, U : RecyclerViewHolder<T>>(TList: List<T>) : RecyclerView.Adapter<U>() {
+abstract class ArrayRecyclerAdapter<T, U : KRecyclerViewHolder<T>>(TList: List<T>) : RecyclerView.Adapter<U>() {
 
     var tList: List<T>? = null
         private set

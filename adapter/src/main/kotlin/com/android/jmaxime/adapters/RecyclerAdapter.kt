@@ -1,16 +1,13 @@
 package com.android.jmaxime.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.ViewGroup
-
 import com.android.jmaxime.factory.ViewHolderFactory
 import com.android.jmaxime.interfaces.IAdapterChanged
 import com.android.jmaxime.interfaces.IBaseCommunication
 import com.android.jmaxime.interfaces.IViewType
-
 import java.security.AccessControlException
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author Maxime Jallu
@@ -18,7 +15,7 @@ import java.util.ArrayList
  * Use this Class for : <br></br>
  * ... {DOCUMENTATION}
  */
-class RecyclerAdapter<T> : RecyclerView.Adapter<RecyclerViewHolder<T>> {
+class RecyclerAdapter<T> : RecyclerView.Adapter<KRecyclerViewHolder<T>> {
 
     private var mTList: MutableList<T>? = null
     private var mFactory: ViewHolderFactory<T>? = null
@@ -30,11 +27,11 @@ class RecyclerAdapter<T> : RecyclerView.Adapter<RecyclerViewHolder<T>> {
 
     constructor(factory: ViewHolderFactory<T>) : this(ArrayList<T>(), factory, null) {}
 
-    constructor(viewHolderType: Class<out RecyclerViewHolder<T>>) : this(ArrayList<T>(), viewHolderType, null) {}
+    constructor(viewHolderType: Class<out KRecyclerViewHolder<T>>) : this(ArrayList<T>(), viewHolderType, null) {}
 
-    constructor(viewHolderType: Class<out RecyclerViewHolder<T>>, callback: IBaseCommunication<T>?) : this(ArrayList<T>(), viewHolderType, callback) {}
+    constructor(viewHolderType: Class<out KRecyclerViewHolder<T>>, callback: IBaseCommunication<T>?) : this(ArrayList<T>(), viewHolderType, callback) {}
 
-    @JvmOverloads constructor(TList: MutableList<T>, viewHolderType: Class<out RecyclerViewHolder<T>>, callback: IBaseCommunication<T>? = null) : this(TList, ViewHolderFactory<T>(viewHolderType), callback) {}
+    @JvmOverloads constructor(TList: MutableList<T>, viewHolderType: Class<out KRecyclerViewHolder<T>>, callback: IBaseCommunication<T>? = null) : this(TList, ViewHolderFactory<T>(viewHolderType), callback) {}
 
     constructor(TList: MutableList<T>, factory: ViewHolderFactory<T>, callback: IBaseCommunication<T>?) {
         mTList = TList
@@ -46,18 +43,16 @@ class RecyclerAdapter<T> : RecyclerView.Adapter<RecyclerViewHolder<T>> {
         mFactory = factory
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder<T>? {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KRecyclerViewHolder<T>? {
         if (mFactory == null) {
             throw AccessControlException("mFactory is not instancied. thanks use setFactory() method.")
         }
 
-        return mFactory!!.createVH(LayoutInflater.from(parent.context)
-                .inflate(mFactory!!
-                        .getLayoutRes(viewType), parent, false), viewType)
+        return mFactory!!.createVH(parent, viewType)
     }
 
 
-    override fun onBindViewHolder(holder: RecyclerViewHolder<T>, position: Int) {
+    override fun onBindViewHolder(holder: KRecyclerViewHolder<T>, position: Int) {
         holder.item = getItem(position)
         holder.isBound = false
         holder.bind(holder.item!!)
@@ -84,7 +79,7 @@ class RecyclerAdapter<T> : RecyclerView.Adapter<RecyclerViewHolder<T>> {
         } else super.getItemViewType(position)
     }
 
-    fun putViewType(viewType: Int, viewHolder: Class<out RecyclerViewHolder<T>>) {
+    fun putViewType(viewType: Int, viewHolder: Class<out KRecyclerViewHolder<T>>) {
         mFactory!!.putViewType(viewType, viewHolder)
     }
 

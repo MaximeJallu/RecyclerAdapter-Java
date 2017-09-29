@@ -27,10 +27,10 @@ import com.squareup.picasso.Picasso
  * * Create for CubeInStore - Android (Decathlon)
  * *
  * * Use this Class for : <br></br>
- * * make it easier ViewHolder adapter recyclerView, define T type of item
+ * * make it easier ViewHolder com.android.jmaxime.adapter recyclerView, define T type of item
  * * Must to use in RecyclerAdapter
  */
-abstract class RecyclerViewHolder<T> constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+abstract class KRecyclerViewHolder<T> constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     var item: T? = null
     var isBound: Boolean = false
