@@ -1,4 +1,4 @@
-package com.android.jmaxime.adapter;
+package com.android.jmaxime.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
