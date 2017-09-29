@@ -1,9 +1,10 @@
-package com.android.jmaxime.adapters;
+package com.android.jmaxime.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+
 
 import com.android.jmaxime.factory.ViewHolderFactory;
 import com.android.jmaxime.interfaces.IAdapterChanged;
@@ -15,15 +16,7 @@ import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Maxime Jallu
- * @since 03/05/2017
- * <p>
- * Create for CubeInStore - Android (Decathlon)
- * <p>
- * Use this Class for : <br/>
- * ... {DOCUMENTATION}
- */
+
 public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<T>> {
 
     private List<T> mTList;
@@ -174,6 +167,21 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
      * Inserts the specified element at the specified position in this list (optional operation).
      * Shifts the element currently at that position (if any) and any subsequent elements to the right (adds one to their indices).
      *
+     * @param collection elements to be inserted
+     * @param index position to be inserted first element of collection
+     */
+    public void addAll(int index, List<T> collection) {
+        if (mTList != null) {
+            mTList.addAll(index, collection);
+            int start = Math.max(0, (mTList.size() - collection.size()) - 1);
+            notifyItemRangeInserted(start, collection.size());
+        }
+    }
+
+    /**
+     * Inserts the specified element at the specified position in this list (optional operation).
+     * Shifts the element currently at that position (if any) and any subsequent elements to the right (adds one to their indices).
+     *
      * @param item the element to be removed
      */
     public void removeItem(T item) {
@@ -215,3 +223,4 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
         return mTList == null || mTList.isEmpty();
     }
 }
+

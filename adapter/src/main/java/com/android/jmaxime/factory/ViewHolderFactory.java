@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.jmaxime.viewholder.JRecyclerViewHolder;
 import com.android.jmaxime.annotations.BindLayoutRes;
 import com.android.jmaxime.interfaces.IBaseCommunication;
+import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
@@ -25,27 +25,27 @@ public class ViewHolderFactory<T> {
 
     private static final String TAG = ViewHolderFactory.class.getName();
     private WeakReference<IBaseCommunication> mCommunication;
-    private Class<? extends JRecyclerViewHolder<T>> mViewHolderType;
-    private SparseArray<Class<? extends JRecyclerViewHolder<T>>> mClassHashMap;
+    private Class<? extends RecyclerViewHolder<T>> mViewHolderType;
+    private SparseArray<Class<? extends RecyclerViewHolder<T>>> mClassHashMap;
 
     public ViewHolderFactory() {
-        this(null);
+        this(null, null);
     }
 
     @SuppressLint("UseSparseArrays")
-    public ViewHolderFactory(Class<? extends JRecyclerViewHolder<T>> viewHolderType) {
+    public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType) {
         this(viewHolderType, null);
     }
 
-    public ViewHolderFactory(Class<? extends JRecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback) {
+    public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback) {
         mViewHolderType = viewHolderType;
         mClassHashMap = new SparseArray<>();
         setCommunication(callback);
     }
 
-    public final JRecyclerViewHolder<T> createVH(ViewGroup view, int viewType) {
-        JRecyclerViewHolder<T> ret = getInstance(LayoutInflater.from(view.getContext())
-                                                               .inflate(getLayoutRes(viewType), view, false), viewType);
+    public final RecyclerViewHolder<T> createVH(ViewGroup view, int viewType) {
+        RecyclerViewHolder<T> ret = getInstance(LayoutInflater.from(view.getContext())
+                                                              .inflate(getLayoutRes(viewType), view, false), viewType);
         if (ret != null) {
             ret.setCommunication(getInterfaceCallback());
         }
@@ -53,9 +53,11 @@ public class ViewHolderFactory<T> {
     }
 
     @SuppressWarnings("TryWithIdenticalCatches")
-    private JRecyclerViewHolder<T> getInstance(View view, int viewType) {
-        JRecyclerViewHolder<T> ret = null;
+    private RecyclerViewHolder<T> getInstance(View view, int viewType) {
+        RecyclerViewHolder<T> ret = null;
         try {
+            /*prévention...*/
+            getViewHolderType(viewType).getConstructor(View.class).setAccessible(true);
             ret = getViewHolderType(viewType).getConstructor(View.class).newInstance(view);
         } catch (InstantiationException e) {
             Log.i(TAG, "getInstance: ");
@@ -64,7 +66,8 @@ public class ViewHolderFactory<T> {
         } catch (InvocationTargetException e) {
             Log.i(TAG, "getInstance: ", e);
         } catch (NoSuchMethodException e) {
-            Log.i(TAG, "not found constructor. La class suivante doit être en static ou ne pas être en inner class : " + getViewHolderType(viewType).getName(), e);
+            Log.i(TAG, "not found constructor. La class suivante doit être en static ou ne pas être en inner class : " + getViewHolderType(viewType)
+                    .getName(), e);
         }
         return ret;
     }
@@ -80,8 +83,8 @@ public class ViewHolderFactory<T> {
         return i;
     }
 
-    protected Class<? extends JRecyclerViewHolder<T>> getViewHolderType(int viewType) {
-        Class<? extends JRecyclerViewHolder<T>> vm = mViewHolderType;
+    protected Class<? extends RecyclerViewHolder<T>> getViewHolderType(int viewType) {
+        Class<? extends RecyclerViewHolder<T>> vm = mViewHolderType;
         if (mClassHashMap.indexOfKey(viewType) > -1) {
             vm = mClassHashMap.get(viewType);
         }
@@ -96,11 +99,11 @@ public class ViewHolderFactory<T> {
         mCommunication = new WeakReference<>(communication);
     }
 
-    public final @LayoutRes int getLayoutRes(int viewType) {
+    final @LayoutRes int getLayoutRes(int viewType) {
         return getViewHolderType(viewType).getAnnotation(BindLayoutRes.class).value();
     }
 
-    public void putViewType(int viewType, Class<? extends JRecyclerViewHolder<T>> viewHolder){
+    public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder) {
         mClassHashMap.put(viewType, viewHolder);
     }
 }

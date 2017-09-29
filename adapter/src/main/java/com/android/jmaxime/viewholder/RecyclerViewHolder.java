@@ -34,10 +34,10 @@ import butterknife.ButterKnife;
  * Create for CubeInStore - Android (Decathlon)
  * <p>
  * Use this Class for : <br/>
- * make it easier ViewHolder com.android.jmaxime.adapter recyclerView, define T type of item
+ * make it easier ViewHolder adapter recyclerView, define T type of item
  * Must to use in ArrayRecyclerAdapter
  */
-public abstract class JRecyclerViewHolder<T> extends RecyclerView.ViewHolder {
+public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
 
     private T mItem;
     private boolean isBound;
@@ -52,7 +52,7 @@ public abstract class JRecyclerViewHolder<T> extends RecyclerView.ViewHolder {
      * @param itemView the Views holder
      */
     @SuppressLint("NewApi")
-    public JRecyclerViewHolder(View itemView) {
+    public RecyclerViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
@@ -136,3 +136,4 @@ public abstract class JRecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         mCommunication = interfaceCallback;
     }
 }
+
