@@ -1,12 +1,6 @@
 # Gradle 
 ```
-download last release here : https://github.com/MaximeJallu/RecyclerAdapter-Java/releases
-compile ('libs/recycleradapter-{version}.aar', {
-        exclude group: 'com.android.support', module: 'support-v4'
-        exclude group: 'com.android.support', module: 'design'
-        exclude group: 'com.jakewharton', module: 'butterknife'
-        exclude group: 'com.squareup.picasso', module: 'picasso'
-    })
+compile "com.github.maximejallu:adapters:1.6"
  ```
     
 # RecyclerAdapter (Easy sample method)

@@ -44,6 +44,12 @@ public class EasyPagerAdapter<T> extends PagerAdapter {
     }
 
     @Override
+    public int getItemPosition(Object object){
+        /*for force notifyDataSetChange*/
+        return PagerAdapter.POSITION_NONE;
+    }
+
+    @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
@@ -59,6 +65,11 @@ public class EasyPagerAdapter<T> extends PagerAdapter {
 
     public void addAll(List<T> medias) {
         mItems.addAll(medias);
+        notifyDataSetChanged();
+    }
+
+    public void addAll(int index, List<T> medias) {
+        mItems.addAll(index, medias);
         notifyDataSetChanged();
     }
 }
