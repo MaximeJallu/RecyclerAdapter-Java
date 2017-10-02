@@ -15,16 +15,16 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
 
     defaultConfig {
-//        applicationId "com.android.jmaxime.com.android.jmaxime.adapter"
-        minSdkVersion 23
-        targetSdkVersion 26
-        versionCode 1711021045 /*YYMMDDHHMM*/
-        versionName "1.4"
+//        applicationId "com.android.jmaxime.adapter"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionName rootProject.ext.versionName
+        versionCode rootProject.ext.versionCode
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -61,3 +61,6 @@ dependencies {
     compile "com.android.support:appcompat-v7:$androidSupport"
     compile "com.android.support:design:$androidSupport"
 }
+
+
+apply from: 'maven.gradle'

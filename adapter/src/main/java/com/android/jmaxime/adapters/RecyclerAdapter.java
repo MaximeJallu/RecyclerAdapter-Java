@@ -209,6 +209,16 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
     }
 
     /**
+     * @see List#indexOf
+     * @param item find item
+     * @return
+     */
+    public int indexOf(T item){
+        return getTList() != null ? getTList().indexOf(item) : -1;
+    }
+
+
+    /**
      * @return instance items list
      */
     public List<T> getTList() {
