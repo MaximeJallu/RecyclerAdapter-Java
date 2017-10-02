@@ -1,6 +1,6 @@
 # Gradle 
 ```
-compile "com.github.maximejallu:adapters:1.6"
+compile "com.github.maximejallu:adapters:1.7"
  ```
     
 # RecyclerAdapter (Easy sample method)
