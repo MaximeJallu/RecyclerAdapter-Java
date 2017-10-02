@@ -54,7 +54,6 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
     @SuppressLint("NewApi")
     public RecyclerViewHolder(View itemView) {
         super(itemView);
-//        ButterKnife.bind(this, itemView);
     }
 
     public void initBinding() {
@@ -97,13 +96,6 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         if (mPictureDecorator != null) {
             mPictureDecorator.showPicture(picture, url);
         }
-//        Picasso.with(picture.getContext())
-//               .load(url)
-//               .placeholder(R.drawable.no_image)
-//               .error(R.drawable.no_image)
-//               .fit()
-//               .centerInside()
-//               .into(picture);
     }
 
     protected boolean isBound() {

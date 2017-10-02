@@ -7,13 +7,7 @@ import com.android.jmaxime.viewholder.RecyclerViewHolder;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * @author Maxime Jallu
- * @since 26/09/2017
- * <p>
- * Use this Class for : <br/>
- * {DOCUMENTATION}
- */
+
 public class CheckableAdapter<T> extends RecyclerAdapter<T> implements ViewCheckableCallback<T> {
 
     private HashMap<String, Boolean> mCheckedMap = new HashMap<>();
