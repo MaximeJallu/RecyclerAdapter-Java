@@ -2,6 +2,7 @@ package com.android.jmaxime.factory;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 
 import com.android.jmaxime.annotations.BindLayoutRes;
 import com.android.jmaxime.interfaces.IBaseCommunication;
+import com.android.jmaxime.interfaces.InitViewHolderDecorator;
+import com.android.jmaxime.interfaces.ShowPictureDecorator;
 import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
 import java.lang.ref.WeakReference;
@@ -25,6 +28,8 @@ public class ViewHolderFactory<T> {
 
     private static final String TAG = ViewHolderFactory.class.getName();
     private WeakReference<IBaseCommunication> mCommunication;
+    private WeakReference<ShowPictureDecorator> mDecoratorWeakReference;
+    private WeakReference<InitViewHolderDecorator> mInitViewDecoratorWeakReference;
     private Class<? extends RecyclerViewHolder<T>> mViewHolderType;
     private SparseArray<Class<? extends RecyclerViewHolder<T>>> mClassHashMap;
 
@@ -37,10 +42,18 @@ public class ViewHolderFactory<T> {
         this(viewHolderType, null);
     }
 
-    public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback) {
+    public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
+        this(viewHolderType, callback, null, null);
+    }
+
+    public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType,
+            @Nullable IBaseCommunication callback, @Nullable InitViewHolderDecorator holderDecorator,
+            @Nullable ShowPictureDecorator pictureDecorator) {
         mViewHolderType = viewHolderType;
         mClassHashMap = new SparseArray<>();
         setCommunication(callback);
+        setInitViewDecorator(holderDecorator);
+        setShowPictureDecorator(pictureDecorator);
     }
 
     public final RecyclerViewHolder<T> createVH(ViewGroup view, int viewType) {
@@ -48,6 +61,8 @@ public class ViewHolderFactory<T> {
                                                               .inflate(getLayoutRes(viewType), view, false), viewType);
         if (ret != null) {
             ret.setCommunication(getInterfaceCallback());
+            ret.setInitViewDecorator(mInitViewDecoratorWeakReference.get());
+            ret.setPictureDecorator(mDecoratorWeakReference.get());
         }
         return ret;
     }
@@ -97,6 +112,14 @@ public class ViewHolderFactory<T> {
 
     public void setCommunication(IBaseCommunication communication) {
         mCommunication = new WeakReference<>(communication);
+    }
+
+    public void setShowPictureDecorator(@Nullable ShowPictureDecorator decoratorWeakReference) {
+        mDecoratorWeakReference = new WeakReference<>(decoratorWeakReference);
+    }
+
+    public void setInitViewDecorator(@Nullable InitViewHolderDecorator initViewDecoratorWeakReference) {
+        mInitViewDecoratorWeakReference = new WeakReference<>(initViewDecoratorWeakReference);
     }
 
     final @LayoutRes int getLayoutRes(int viewType) {
