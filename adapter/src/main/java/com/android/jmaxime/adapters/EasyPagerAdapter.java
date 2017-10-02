@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 
 import com.android.jmaxime.factory.ViewHolderFactory;
 import com.android.jmaxime.interfaces.IBaseCommunication;
+import com.android.jmaxime.interfaces.InitViewHolderDecorator;
+import com.android.jmaxime.interfaces.ShowPictureDecorator;
 import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
 import java.util.ArrayList;
@@ -50,6 +52,14 @@ public class EasyPagerAdapter<T> extends PagerAdapter {
 
     @Override public int getCount() {
         return mItems.size();
+    }
+
+    public void attachInitHolderDecorator(InitViewHolderDecorator holderDecorator) {
+        mFactory.setInitViewDecorator(holderDecorator);
+    }
+
+    public void attachShowPictureDecorator(ShowPictureDecorator pictureDecorator) {
+        mFactory.setShowPictureDecorator(pictureDecorator);
     }
 
     @Override

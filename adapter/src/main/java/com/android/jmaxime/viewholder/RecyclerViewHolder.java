@@ -14,11 +14,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.android.jmaxime.adapter.R;
 import com.android.jmaxime.interfaces.IBaseCommunication;
-import com.squareup.picasso.Picasso;
-
-import butterknife.ButterKnife;
+import com.android.jmaxime.interfaces.InitViewHolderDecorator;
+import com.android.jmaxime.interfaces.ShowPictureDecorator;
 
 /**
  * @author Maxime Jallu
@@ -41,6 +39,8 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
 
     private T mItem;
     private boolean isBound;
+    private InitViewHolderDecorator mDecorator;
+    private ShowPictureDecorator mPictureDecorator;
     private IBaseCommunication<T> mCommunication;
 
     /**
@@ -54,7 +54,12 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
     @SuppressLint("NewApi")
     public RecyclerViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
+    }
+
+    public void initBinding() {
+        if (mDecorator != null) {
+            mDecorator.initBinding(itemView);
+        }
     }
 
     public abstract void bind(final T item);
@@ -88,17 +93,21 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
     }
 
     protected final void showPicture(ImageView picture, String url) {
-        Picasso.with(picture.getContext())
-               .load(url)
-               .placeholder(R.drawable.no_image)
-               .error(R.drawable.no_image)
-               .fit()
-               .centerInside()
-               .into(picture);
+        if (mPictureDecorator != null) {
+            mPictureDecorator.showPicture(picture, url);
+        }
     }
 
     protected boolean isBound() {
         return isBound;
+    }
+
+    public void setInitViewDecorator(InitViewHolderDecorator decorator) {
+        mDecorator = decorator;
+    }
+
+    public void setPictureDecorator(ShowPictureDecorator pictureDecorator) {
+        mPictureDecorator = pictureDecorator;
     }
 
     public void setBound(boolean bound) {

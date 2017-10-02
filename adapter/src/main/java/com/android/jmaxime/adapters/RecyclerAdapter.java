@@ -9,6 +9,8 @@ import com.android.jmaxime.factory.ViewHolderFactory;
 import com.android.jmaxime.interfaces.IAdapterChanged;
 import com.android.jmaxime.interfaces.IBaseCommunication;
 import com.android.jmaxime.interfaces.IViewType;
+import com.android.jmaxime.interfaces.InitViewHolderDecorator;
+import com.android.jmaxime.interfaces.ShowPictureDecorator;
 import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
 import java.security.AccessControlException;
@@ -61,7 +63,10 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
             throw new AccessControlException("mFactory is not instancied. thanks use setFactory() method.");
         }
 
-        return mFactory.createVH(parent, viewType);
+        RecyclerViewHolder<T> vh = mFactory.createVH(parent, viewType);
+        /*used for decorator. Sample ButterKnife*/
+        vh.initBinding();
+        return vh;
     }
 
 
@@ -117,6 +122,14 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
     public void setCommunication(IBaseCommunication communication) {
         mFactory.setCommunication(communication);
         notifyDataSetChanged();
+    }
+
+    public void attachInitHolderDecorator(InitViewHolderDecorator holderDecorator) {
+        mFactory.setInitViewDecorator(holderDecorator);
+    }
+
+    public void attachShowPictureDecorator(ShowPictureDecorator pictureDecorator) {
+        mFactory.setShowPictureDecorator(pictureDecorator);
     }
 
     /**
