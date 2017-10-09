@@ -1,15 +1,17 @@
 # Gradle 
 ```
-compile "com.github.maximejallu:adapters:1.7"
- ```
+compile "com.github.maximejallu:adapters:1.8"
+```
     
 # RecyclerAdapter (Easy sample method)
 CustomerViewHolder.class :
 ```java
 @BindLayoutRes(R.layout.{name_of_your_layout})
 public class CustomerViewHolder extends RecyclerViewHolder<Customer> {
+    TextView mText;
     CustomerViewHolder(View view){
         super(view);
+        mText = view.findViewById(R.id.text1);
     }
     
     void onBind(Customer item){
@@ -72,6 +74,25 @@ mAdapter = new RecyclerAdapter(customerList, CustomerViewHolder1.class/*type par
 mAdapter.putViewType(Customer.TYPE_STORE, CustomerViewHolder2.class);
 mAdapter.putViewType(Customer.TYPE_OTHER, CustomerViewHolder3.class);
 mRecyclerView.setAdapter(adapter);
+```
+# SectionDecorator (Recycler with LinearLayout) Create your RecyclerViewHolder
+Sample : 
+```java
+RecyclerAdapter<Customer> baseAdapter = new RecyclerAdapter<>(...);
+RecyclerSectionedAdapter adapter = new RecyclerSectionedAdapter(SectionViewHolder.class, baseAdapter);
+```
+
+# SectionDecorator (Recycler with GridLayout) Create your RecyclerViewHolder
+Sample : 
+```java
+mRecylerView.setLayoutManager(...);
+RecyclerAdapter<Customer> baseAdapter = new RecyclerAdapter<>(...);
+RecyclerSectionedAdapter<String, Customer> sectionAdapter = new RecyclerSectionedAdapter<>(SectionViewHolder.class, mRecylerView, baseAdapter);
+
+sectionAdapter.addSection(0/*position*/, "Title Section 1");
+Customer i = sectionAdapter.getItem(1 /*sectioned position*/);
+
+mRecylerView.setAdapter(sectionAdapter);
 ```
 
 # ArrayRecyclerAdapter (other method)
