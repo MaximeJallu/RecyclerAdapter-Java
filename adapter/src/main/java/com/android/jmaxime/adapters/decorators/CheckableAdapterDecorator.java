@@ -1,7 +1,8 @@
-package com.android.jmaxime.adapters;
+package com.android.jmaxime.adapters.decorators;
 
 import android.util.SparseBooleanArray;
 
+import com.android.jmaxime.adapters.RecyclerAdapter;
 import com.android.jmaxime.interfaces.CheckableViewHolder;
 import com.android.jmaxime.viewholder.CheckableRecyclerViewHolder;
 import com.android.jmaxime.viewholder.RecyclerViewHolder;

@@ -27,8 +27,8 @@ ext {
     buildToolsVersion = "26.0.1"
     minSdkVersion = 16
     targetSdkVersion = 26
-    versionCode = 1711021630
-    versionName = "1.7"
+    versionCode = 1711100045
+    versionName = "1.8"
 }
 
 task clean(type: Delete) {

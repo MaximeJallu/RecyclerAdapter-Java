@@ -1,4 +1,4 @@
-package com.android.jmaxime.adapters;
+package com.android.jmaxime.adapters.itemdecorator;
 
 
 import android.content.Context;
@@ -44,10 +44,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
      * Set the orientation of the underlying grid / list
      *
      * @param orientation must be
-     * {@link com.android.jmaxime.adapters.DividerItemDecoration#LIST_HORIZONTAL}
-     * {@link com.android.jmaxime.adapters.DividerItemDecoration#LIST_VERTICAL}
-     * {@link com.android.jmaxime.adapters.DividerItemDecoration#GRID_STROKE}
-     * {@link com.android.jmaxime.adapters.DividerItemDecoration#GRID_FILL}
+     * {@link DividerItemDecoration#LIST_HORIZONTAL}
+     * {@link DividerItemDecoration#LIST_VERTICAL}
+     * {@link DividerItemDecoration#GRID_STROKE}
+     * {@link DividerItemDecoration#GRID_FILL}
      */
     public void setOrientation(final int orientation) {
         if (orientation != LIST_HORIZONTAL &&
