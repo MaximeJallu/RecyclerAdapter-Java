@@ -21,6 +21,7 @@ import java.util.List;
  * @param <T> Type d'item de la liste
  * @param <U> Type de ViewHolder doit extends de RecyclerViewHolder
  */
+@Deprecated
 public abstract class ArrayRecyclerAdapter<T, U extends RecyclerViewHolder<T>> extends RecyclerView.Adapter<U> {
 
     private List<T> mTList;

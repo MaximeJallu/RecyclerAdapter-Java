@@ -2,7 +2,7 @@ package com.android.jmaxime.viewholder;
 
 import android.view.View;
 
-import com.android.jmaxime.adapters.CheckableAdapterDecorator;
+import com.android.jmaxime.adapters.decorators.CheckableAdapterDecorator;
 
 
 /**
