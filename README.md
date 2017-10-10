@@ -75,14 +75,16 @@ mAdapter.putViewType(Customer.TYPE_STORE, CustomerViewHolder2.class);
 mAdapter.putViewType(Customer.TYPE_OTHER, CustomerViewHolder3.class);
 mRecyclerView.setAdapter(adapter);
 ```
-# SectionDecorator (Recycler with LinearLayout) Create your RecyclerViewHolder
+# SectionDecorator (Recycler with LinearLayout)
+precondition : create your RecyclerViewHolder
 Sample : 
 ```java
 RecyclerAdapter<Customer> baseAdapter = new RecyclerAdapter<>(...);
 RecyclerSectionedAdapter adapter = new RecyclerSectionedAdapter(SectionViewHolder.class, baseAdapter);
 ```
 
-# SectionDecorator (Recycler with GridLayout) Create your RecyclerViewHolder
+# SectionDecorator (Recycler with GridLayout)
+precondition : create your RecyclerViewHolder
 Sample : 
 ```java
 mRecylerView.setLayoutManager(...);
