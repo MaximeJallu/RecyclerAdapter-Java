@@ -1,18 +1,13 @@
 buildscript {
-    ext.kotlin_version = '1.1.4-3'
     repositories {
         jcenter()
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.50"
-        classpath 'me.tatarka:gradle-retrolambda:3.7.0'
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -20,7 +15,6 @@ android {
 
 
     defaultConfig {
-//        applicationId "com.android.jmaxime.adapter"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionName rootProject.ext.versionName
@@ -51,13 +45,11 @@ def androidSupport = '26.1.0'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-//    implementation "com.android.support:appcompat-v7:$androidSupport"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-//    compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.50"
     compile "com.android.support:appcompat-v7:$androidSupport"
     compile "com.android.support:design:$androidSupport"
 }

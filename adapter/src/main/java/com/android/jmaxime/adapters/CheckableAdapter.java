@@ -40,6 +40,10 @@ public class CheckableAdapter<T> extends RecyclerAdapter<T> implements ViewCheck
         return mCheckedMap.containsKey(hashString) ? mCheckedMap.get(hashString) : false;
     }
 
+    @Override public boolean isCheckable(T item) {
+        return true;
+    }
+
     @Override public void put(String key, boolean value) {
         mCheckedMap.put(key, value);
     }
