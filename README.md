@@ -1,4 +1,4 @@
-#SDK Version
+# SDK Version
 minSdkVersion = 16
 
 # Gradle 
