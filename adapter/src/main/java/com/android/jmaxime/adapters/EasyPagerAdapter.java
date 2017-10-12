@@ -33,7 +33,7 @@ public class EasyPagerAdapter<T> extends PagerAdapter {
         this(items, viewHolder, null);
     }
 
-    public EasyPagerAdapter(List<T> items, Class<? extends RecyclerViewHolder<T>> viewHolder, IBaseCommunication<T> callback) {
+    public EasyPagerAdapter(List<T> items, Class<? extends RecyclerViewHolder<T>> viewHolder, IBaseCommunication callback) {
         mItems = items;
         mFactory = new ViewHolderFactory<>(viewHolder, callback);
     }

@@ -1,19 +1,7 @@
 package com.android.jmaxime.interfaces;
 
-import android.annotation.SuppressLint;
-
-/**
- * @author Maxime Jallu
- * @since 29/09/2017
- * <p>
- * Use this Class for : <br/>
- * {DOCUMENTATION}
- */
-@SuppressLint("NewApi")
-public interface ViewCheckableCallback<T> extends IBaseCommunication<T> {
+public interface ViewCheckableCallback<T> extends IBaseCommunication {
     boolean isChecked(T item);
-    default boolean isCheckable(T item) {
-        return true;
-    }
+    boolean isCheckable(T item);
     void put(String key, boolean value);
 }

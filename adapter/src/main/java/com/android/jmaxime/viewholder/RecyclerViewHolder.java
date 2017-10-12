@@ -41,7 +41,7 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
     private boolean isBound;
     private InitViewHolderDecorator mDecorator;
     private ShowPictureDecorator mPictureDecorator;
-    private IBaseCommunication<T> mCommunication;
+    private IBaseCommunication mCommunication;
 
     /**
      * This super() auto BindViews with ButterKnife<br/>
@@ -122,15 +122,7 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         mItem = item;
     }
 
-    protected final void onClickRemoveItem() {
-        getDispatcher().onDeleteClicked(getAdapterPosition(), getItem());
-    }
-
-    protected final void onClickEditItem() {
-        getDispatcher().onEditClicked(getAdapterPosition(), getItem());
-    }
-
-    protected <I extends IBaseCommunication<T>> I getDispatcher() {
+    protected <I extends IBaseCommunication> I getDispatcher() {
         I i = null;
         try {
             //noinspection unchecked
@@ -141,7 +133,7 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         return i;
     }
 
-    public void setCommunication(IBaseCommunication<T> interfaceCallback) {
+    public void setCommunication(IBaseCommunication interfaceCallback) {
         mCommunication = interfaceCallback;
     }
 }

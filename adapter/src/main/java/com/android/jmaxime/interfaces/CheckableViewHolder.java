@@ -7,7 +7,7 @@ package com.android.jmaxime.interfaces;
  * Use this Class for : <br/>
  * {DOCUMENTATION}
  */
-public interface CheckableViewHolder<T> extends IBaseCommunication<T> {
+public interface CheckableViewHolder<T> extends IBaseCommunication {
     boolean isChecked(T item);
     boolean isCheckable(T item);
     void selectedItem(T item);
