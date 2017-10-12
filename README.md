@@ -1,3 +1,6 @@
+#SDK Version
+minSdkVersion = 16
+
 # Gradle 
 ```
 compile "com.github.maximejallu:adapters:1.8"
