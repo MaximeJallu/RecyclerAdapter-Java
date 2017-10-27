@@ -5,13 +5,6 @@ import android.view.View;
 import com.android.jmaxime.adapters.decorators.CheckableAdapterDecorator;
 
 
-/**
- * @author Maxime Jallu
- * @since 02/10/2017
- * <p>
- * Use this Class for : <br/>
- * {DOCUMENTATION}
- */
 public abstract class CheckableRecyclerViewHolder<T> extends RecyclerViewHolder<T> {
 
     private boolean mIsChecked;
