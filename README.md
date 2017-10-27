@@ -3,7 +3,7 @@ minSdkVersion = 16
 
 # Gradle 
 ```
-compile "com.github.maximejallu:adapters:1.9"
+compile "com.github.maximejallu:adapters:1.1.2"
 ```
     
 # RecyclerAdapter (Easy sample method)
@@ -59,6 +59,7 @@ public class CustomerViewHolder2 extends RecyclerViewHolder<Customer> {
     }
 }
 
+//# Solution 1 : the object determines are own item view type 
 public class Customer implements IViewType {
    public static final int TYPE_ON_LINE = 0; /*default*/
    public static final int TYPE_STORE = 1;
@@ -71,12 +72,24 @@ public class Customer implements IViewType {
     }
 }
 
-private RecyclerAdapter<Customer> mAdapter;
+public class MyFragment extends Fragment {
+    
+    public void onCreateView(){
+        private RecyclerAdapter<Customer> mAdapter;
+        
+        mAdapter = new RecyclerAdapter(customerList, CustomerViewHolder1.class/*type par default*/);
+        mAdapter.putViewType(Customer.TYPE_STORE, CustomerViewHolder2.class, null /*callback*/);
+        mAdapter.putViewType(Customer.TYPE_OTHER, CustomerViewHolder3.class, true /*add default callback*/);
+        
+        //# Solution 2 : We give the strategy of the IViewType to our adapt it
+        mAdapter.setItemViewType(item -> {
+            //todo stategy type of item
+            return 0;
+        });
+        mRecyclerView.setAdapter(adapter);
+    }
 
-mAdapter = new RecyclerAdapter(customerList, CustomerViewHolder1.class/*type par default*/);
-mAdapter.putViewType(Customer.TYPE_STORE, CustomerViewHolder2.class);
-mAdapter.putViewType(Customer.TYPE_OTHER, CustomerViewHolder3.class);
-mRecyclerView.setAdapter(adapter);
+}
 ```
 # SectionDecorator (Recycler with LinearLayout)
 precondition : create your RecyclerViewHolder

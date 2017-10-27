@@ -1,7 +1,6 @@
 package com.android.jmaxime.viewholder;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
@@ -43,15 +42,6 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
     private ShowPictureDecorator mPictureDecorator;
     private IBaseCommunication mCommunication;
 
-    /**
-     * This super() auto BindViews with ButterKnife<br/>
-     * <code>
-     * ButterKnife.bind(this, itemView);
-     * </code>
-     *
-     * @param itemView the Views holder
-     */
-    @SuppressLint("NewApi")
     public RecyclerViewHolder(View itemView) {
         super(itemView);
     }

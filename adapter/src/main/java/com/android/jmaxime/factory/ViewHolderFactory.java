@@ -27,11 +27,11 @@ import java.lang.reflect.InvocationTargetException;
 public class ViewHolderFactory<T> {
 
     private static final String TAG = ViewHolderFactory.class.getName();
-    private WeakReference<IBaseCommunication> mCommunication;
+    private static final int DEFAULT_VIEW_TYPE = 0;
+
     private WeakReference<ShowPictureDecorator> mDecoratorWeakReference;
     private WeakReference<InitViewHolderDecorator> mInitViewDecoratorWeakReference;
-    private Class<? extends RecyclerViewHolder<T>> mViewHolderType;
-    private SparseArray<Class<? extends RecyclerViewHolder<T>>> mClassHashMap;
+    private SparseArray<ViewTypeContainer<T>> mViewHashMap;
 
     public ViewHolderFactory() {
         this(null, null);
@@ -42,25 +42,27 @@ public class ViewHolderFactory<T> {
         this(viewHolderType, null);
     }
 
-    public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
+    public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType,
+                             @Nullable IBaseCommunication callback) {
         this(viewHolderType, callback, null, null);
     }
 
     public ViewHolderFactory(Class<? extends RecyclerViewHolder<T>> viewHolderType,
-            @Nullable IBaseCommunication callback, @Nullable InitViewHolderDecorator holderDecorator,
-            @Nullable ShowPictureDecorator pictureDecorator) {
-        mViewHolderType = viewHolderType;
-        mClassHashMap = new SparseArray<>();
-        setCommunication(callback);
+                             @Nullable IBaseCommunication callback,
+                             @Nullable InitViewHolderDecorator holderDecorator,
+                             @Nullable ShowPictureDecorator pictureDecorator) {
+        mViewHashMap = new SparseArray<>();
+
+        mViewHashMap.put(DEFAULT_VIEW_TYPE, new ViewTypeContainer<>(viewHolderType, callback));
         setInitViewDecorator(holderDecorator);
         setShowPictureDecorator(pictureDecorator);
     }
 
     public final RecyclerViewHolder<T> createVH(ViewGroup view, int viewType) {
         RecyclerViewHolder<T> ret = getInstance(LayoutInflater.from(view.getContext())
-                                                              .inflate(getLayoutRes(viewType), view, false), viewType);
+                .inflate(getLayoutRes(viewType), view, false), viewType);
         if (ret != null) {
-            ret.setCommunication(getInterfaceCallback());
+            ret.setCommunication(getInterfaceCallback(viewType));
             ret.setInitViewDecorator(mInitViewDecoratorWeakReference.get());
             ret.setPictureDecorator(mDecoratorWeakReference.get());
         }
@@ -87,11 +89,11 @@ public class ViewHolderFactory<T> {
         return ret;
     }
 
-    protected <I extends IBaseCommunication> I getInterfaceCallback() {
+    protected <I extends IBaseCommunication> I getInterfaceCallback(int viewType) {
         I i = null;
         try {
             //noinspection unchecked
-            i = (I) getCommunication();
+            i = (I) getCommunication(viewType);
         } catch (ClassCastException e) {
             Log.e(TAG, "getInterfaceCallback: ", e);
         }
@@ -99,19 +101,19 @@ public class ViewHolderFactory<T> {
     }
 
     protected Class<? extends RecyclerViewHolder<T>> getViewHolderType(int viewType) {
-        Class<? extends RecyclerViewHolder<T>> vm = mViewHolderType;
-        if (mClassHashMap.indexOfKey(viewType) > -1) {
-            vm = mClassHashMap.get(viewType);
+        Class<? extends RecyclerViewHolder<T>> vm = mViewHashMap.get(DEFAULT_VIEW_TYPE).mViewHolderType;
+        if (containsViewType(viewType)) {
+            vm = mViewHashMap.get(viewType).mViewHolderType;
         }
         return vm;
     }
 
-    public final IBaseCommunication getCommunication() {
-        return mCommunication.get();
+    public final IBaseCommunication getCommunication(int viewType) {
+        return containsViewType(viewType) ? mViewHashMap.get(viewType).mCallback : null;
     }
 
     public void setCommunication(IBaseCommunication communication) {
-        mCommunication = new WeakReference<>(communication);
+        mViewHashMap.get(DEFAULT_VIEW_TYPE).mCallback = communication;
     }
 
     public void setShowPictureDecorator(@Nullable ShowPictureDecorator decoratorWeakReference) {
@@ -123,10 +125,54 @@ public class ViewHolderFactory<T> {
     }
 
     final @LayoutRes int getLayoutRes(int viewType) {
-        return getViewHolderType(viewType).getAnnotation(BindLayoutRes.class).value();
+        return containsViewType(viewType) ? mViewHashMap.get(viewType).mLayoutResId : 0;
     }
 
-    public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder) {
-        mClassHashMap.put(viewType, viewHolder);
+    public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder, boolean setDefaultCommunication){
+        putViewType(viewType, viewHolder, setDefaultCommunication ? mViewHashMap.get(DEFAULT_VIEW_TYPE).mCallback : null);
+    }
+
+    public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder, IBaseCommunication communicationCallback) {
+        if (viewType == 0){
+            throw new IllegalArgumentException("viewType must be greater than 0. Because 0 is reserved for viewHolder by default");
+        }
+        if (containsViewType(viewType)){
+            mViewHashMap.get(viewType).update(viewHolder, communicationCallback);
+        }else {
+            mViewHashMap.put(viewType, new ViewTypeContainer<>(viewHolder, communicationCallback));
+        }
+    }
+
+    private boolean containsViewType(int viewType){
+        return mViewHashMap.indexOfKey(viewType) > 0;
+    }
+
+    private static class ViewTypeContainer<T> {
+        Class<? extends RecyclerViewHolder<T>> mViewHolderType;
+        @LayoutRes int mLayoutResId;
+        IBaseCommunication mCallback;
+
+        public ViewTypeContainer(Class<? extends RecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback) {
+            update(viewHolderType, callback);
+        }
+
+        public void update(Class<? extends RecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback){
+            mViewHolderType = viewHolderType;
+            /*optimisation reflexion*/
+            mLayoutResId = getLayoutResId(viewHolderType);
+            mCallback = callback;
+        }
+
+        private int getLayoutResId(Class<? extends RecyclerViewHolder<T>> aClass){
+            checkViewType(aClass);
+            return aClass.getAnnotation(BindLayoutRes.class).value();
+        }
+
+        private void checkViewType(Class<? extends RecyclerViewHolder<T>> viewHolder) {
+            if (!viewHolder.isAnnotationPresent(BindLayoutRes.class)) {
+                throw new IllegalArgumentException(viewHolder.getSimpleName()
+                        + "is not annoted by " + BindLayoutRes.class.getSimpleName());
+            }
+        }
     }
 }
