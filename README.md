@@ -3,7 +3,7 @@ minSdkVersion = 16
 
 # Gradle 
 ```
-compile "com.github.maximejallu:adapters:1.1.2"
+compile "com.github.maximejallu:adapters:1.10.1"
 ```
     
 # RecyclerAdapter (Easy sample method)
