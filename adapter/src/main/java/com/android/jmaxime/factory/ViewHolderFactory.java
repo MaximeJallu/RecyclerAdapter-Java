@@ -18,12 +18,6 @@ import com.android.jmaxime.viewholder.RecyclerViewHolder;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * @author Maxime Jallu
- * @since 03/05/2017
- * Use this Class for : <br/>
- * ... {DOCUMENTATION}
- */
 public class ViewHolderFactory<T> {
 
     private static final String TAG = ViewHolderFactory.class.getName();
@@ -144,7 +138,7 @@ public class ViewHolderFactory<T> {
     }
 
     private boolean containsViewType(int viewType){
-        return mViewHashMap.indexOfKey(viewType) > 0;
+        return mViewHashMap.indexOfKey(viewType) >= 0;
     }
 
     private static class ViewTypeContainer<T> {
@@ -152,11 +146,11 @@ public class ViewHolderFactory<T> {
         @LayoutRes int mLayoutResId;
         IBaseCommunication mCallback;
 
-        public ViewTypeContainer(Class<? extends RecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback) {
+        ViewTypeContainer(Class<? extends RecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback) {
             update(viewHolderType, callback);
         }
 
-        public void update(Class<? extends RecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback){
+        void update(Class<? extends RecyclerViewHolder<T>> viewHolderType, IBaseCommunication callback){
             mViewHolderType = viewHolderType;
             /*optimisation reflexion*/
             mLayoutResId = getLayoutResId(viewHolderType);

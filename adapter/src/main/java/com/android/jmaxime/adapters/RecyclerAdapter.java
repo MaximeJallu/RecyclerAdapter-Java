@@ -22,7 +22,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
 
     private List<T> mTList;
     private ViewHolderFactory<T> mViewHolderFactory;
-    private IItemViewType<T> mViewTypeStategy;
+    private IItemViewType<T> mViewTypeStrategy;
     private IAdapterChanged mAdapterChanged;
 
     public RecyclerAdapter() {
@@ -48,7 +48,6 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
     public RecyclerAdapter(List<T> TList, Class<? extends RecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
         this(TList, new ViewHolderFactory<>(viewHolderType, callback));
     }
-
 
     public RecyclerAdapter(List<T> TList, ViewHolderFactory<T> factory) {
         mTList = TList;
@@ -97,16 +96,16 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
 
     @Override
     public int getItemViewType(int position) {
-        if (mViewTypeStategy != null){
-            return mViewTypeStategy.getItemViewType(getItem(position));
+        if (mViewTypeStrategy != null){
+            return mViewTypeStrategy.getItemViewType(getItem(position));
         }else if (getItem(position) != null && getItem(position) instanceof IViewType) {
             return ((IViewType) getItem(position)).getItemViewType();
         }
         return super.getItemViewType(position);
     }
 
-    public void setViewTypeFactory(IItemViewType<T> viewTypeStategy) {
-        mViewTypeStategy = viewTypeStategy;
+    public void setViewTypeFactory(IItemViewType<T> viewTypeStrategy) {
+        mViewTypeStrategy = viewTypeStrategy;
     }
 
     public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder, boolean setDefaultCom){
