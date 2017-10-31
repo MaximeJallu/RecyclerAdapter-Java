@@ -18,7 +18,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 def isReleaseBuild() {
-    return rootProject.ext.versionName.contains("SNAPSHOT") == false
+    return MavenKey.VERSION_NAME.contains("SNAPSHOT") == false
 }
 
 def getReleaseRepositoryUrl() {
@@ -39,15 +39,33 @@ def getRepositoryPassword() {
     return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
 }
 
+MavenKey {
+    GROUP = hasProperty('GROUP') ? GROUP : ""
+    VERSION_NAME = rootProject.ext.versionName
+    POM_ARTIFACT_ID = hasProperty('POM_ARTIFACT_ID') ? POM_ARTIFACT_ID : ""
+    POM_NAME = hasProperty('POM_NAME') ? POM_NAME : ""
+    POM_PACKAGING = hasProperty('POM_PACKAGING') ? GROUP : ""
+    POM_DESCRIPTION = hasProperty('POM_DESCRIPTION') ? POM_DESCRIPTION : ""
+    POM_URL = hasProperty('POM_URL') ? POM_URL : ""
+    POM_SCM_URL = hasProperty('POM_SCM_URL') ? POM_SCM_URL : ""
+    POM_SCM_CONNECTION = hasProperty('POM_SCM_CONNECTION') ? POM_SCM_CONNECTION : ""
+    POM_SCM_DEV_CONNECTION = hasProperty('POM_SCM_DEV_CONNECTION') ? POM_SCM_DEV_CONNECTION : ""
+    POM_LICENCE_NAME = hasProperty('POM_LICENCE_NAME') ? POM_LICENCE_NAME : ""
+    POM_LICENCE_URL = hasProperty('POM_LICENCE_URL') ? POM_LICENCE_URL : ""
+    POM_LICENCE_DIST = hasProperty('POM_LICENCE_DIST') ? POM_LICENCE_DIST : ""
+    POM_DEVELOPER_ID = hasProperty('POM_DEVELOPER_ID') ? POM_DEVELOPER_ID : ""
+    POM_DEVELOPER_NAME = hasProperty('POM_DEVELOPER_NAME') ? POM_DEVELOPER_NAME : ""
+}
+
 afterEvaluate { project ->
     uploadArchives {
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                pom.groupId = GROUP
-                pom.artifactId = POM_ARTIFACT_ID
-                pom.version = rootProject.ext.versionName
+                pom.groupId = MavenKey.GROUP
+                pom.artifactId = MavenKey.POM_ARTIFACT_ID
+                pom.version = MavenKey.VERSION_NAME
 
                 repository(url: getReleaseRepositoryUrl()) {
                     authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
@@ -57,29 +75,29 @@ afterEvaluate { project ->
                 }
 
                 pom.project {
-                    name POM_NAME
-                    packaging POM_PACKAGING
-                    description POM_DESCRIPTION
-                    url POM_URL
+                    name MavenKey.POM_NAME
+                    packaging MavenKey.POM_PACKAGING
+                    description MavenKey.POM_DESCRIPTION
+                    url MavenKey.POM_URL
 
                     scm {
-                        url POM_SCM_URL
-                        connection POM_SCM_CONNECTION
-                        developerConnection POM_SCM_DEV_CONNECTION
+                        url MavenKey.POM_SCM_URL
+                        connection MavenKey.POM_SCM_CONNECTION
+                        developerConnection MavenKey.POM_SCM_DEV_CONNECTION
                     }
 
                     licenses {
                         license {
-                            name POM_LICENCE_NAME
-                            url POM_LICENCE_URL
-                            distribution POM_LICENCE_DIST
+                            name MavenKey.POM_LICENCE_NAME
+                            url MavenKey.POM_LICENCE_URL
+                            distribution MavenKey.POM_LICENCE_DIST
                         }
                     }
 
                     developers {
                         developer {
-                            id POM_DEVELOPER_ID
-                            name POM_DEVELOPER_NAME
+                            id MavenKey.POM_DEVELOPER_ID
+                            name MavenKey.POM_DEVELOPER_NAME
                         }
                     }
                 }

@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setSectionAdapter(){
+        mRecycler.getAdapter().notifyDataSetChanged();
         List<A> list = new ArrayList();
         list.add(new A("Alibaba"));
         list.add(new A("Allouette "));
@@ -114,6 +115,6 @@ public class MainActivity extends AppCompatActivity {
         SectionedAdapter<A, RecyclerAdapter> sectionedAdapter = new SectionedAdapter<>(A_Bis_ViewHolder.class, adapter);
         sectionedAdapter.addSection(0, new A("SECTION ONE"));
         sectionedAdapter.addSection(1, new A("SECTION TWO"));
-        mRecycler.setAdapter(sectionedAdapter);
+//        mRecycler.setAdapter(sectionedAdapter);
     }
 }
