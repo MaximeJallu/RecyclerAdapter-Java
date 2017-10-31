@@ -5,21 +5,20 @@ import android.widget.TextView;
 
 import com.android.jmaxime.annotations.BindLayoutRes;
 import com.android.jmaxime.sample.R;
-import com.android.jmaxime.sample.models.ObjectOne;
+import com.android.jmaxime.sample.models.B;
 import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
-@BindLayoutRes(R.layout.item_one_sample)
-public class OneViewHolder extends RecyclerViewHolder<ObjectOne> {
-
+@BindLayoutRes(R.layout.item_two_sample)
+public class B_ViewHolder extends RecyclerViewHolder<B> {
     private final TextView mTextView;
 
-    public OneViewHolder(View itemView) {
+    public B_ViewHolder(View itemView) {
         super(itemView);
         mTextView = itemView.findViewById(R.id.text);
     }
 
     @Override
-    public void bind(ObjectOne item) {
+    public void bind(B item) {
         mTextView.setText(item.getName());
     }
 }

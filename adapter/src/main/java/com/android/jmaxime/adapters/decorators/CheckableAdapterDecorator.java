@@ -23,7 +23,7 @@ public class CheckableAdapterDecorator<T> extends RecyclerAdapter<T> implements 
         return isChecked(item) || mMap.indexOfValue(true) < 0 || !isLockable && isLock();
     }
 
-    @Override public void onBindViewHolder(RecyclerViewHolder<T> holder, int position) {
+    @Override public void onBindViewHolder(RecyclerViewHolder holder, int position) {
         ((CheckableRecyclerViewHolder)holder).setChecked(isChecked(mAdapter.getItem(position)));
         ((CheckableRecyclerViewHolder)holder).setCheckable(isCheckable(mAdapter.getItem(position)));
         ((CheckableRecyclerViewHolder)holder).setDecorator(this);

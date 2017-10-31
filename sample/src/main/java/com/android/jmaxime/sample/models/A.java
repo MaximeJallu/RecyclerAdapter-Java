@@ -1,9 +1,9 @@
 package com.android.jmaxime.sample.models;
 
-public class ObjectOne {
+public class A {
     private String mName;
 
-    public ObjectOne(String name) {
+    public A(String name) {
         mName = name;
     }
 

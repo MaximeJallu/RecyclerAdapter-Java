@@ -8,9 +8,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
-import com.android.jmaxime.sample.adapters.MultiObjectAdapter;
-import com.android.jmaxime.sample.models.ObjectOne;
-import com.android.jmaxime.sample.models.ObjectTwo;
+import com.android.jmaxime.adapters.RecyclerAdapter;
+import com.android.jmaxime.adapters.decorators.SectionedAdapter;
+import com.android.jmaxime.sample.models.A;
+import com.android.jmaxime.sample.models.B;
+import com.android.jmaxime.sample.models.Container;
+import com.android.jmaxime.sample.viewholders.A_Bis_ViewHolder;
+import com.android.jmaxime.sample.viewholders.A_ViewHolder;
+import com.android.jmaxime.sample.viewholders.B_ViewHolder;
+import com.android.jmaxime.sample.viewholders.EmptyViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +32,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-//                    mTextMessage.setText(R.string.title_home);
+                    setMultiAdapter();
                     return true;
                 case R.id.navigation_dashboard:
-//                    mTextMessage.setText(R.string.title_dashboard);
+                    setSimpleMultiAdapter();
                     return true;
                 case R.id.navigation_notifications:
-//                    mTextMessage.setText(R.string.title_notifications);
+                    setSectionAdapter();
                     return true;
             }
             return false;
@@ -45,15 +51,69 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mRecycler = findViewById(R.id.recycler);
+        mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        List<Object> list = new ArrayList();
-        list.add(new ObjectOne("Bonjour one"));
-        list.add(new ObjectTwo("Bonjour two"));
-
-        mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        mRecycler.setAdapter(new MultiObjectAdapter(list));
     }
 
+    private void setMultiAdapter() {
+        List<Container> containers = new ArrayList<>();
+        containers.add(new Container(new A("Je suis ONE")));
+        containers.add(new Container());
+        containers.add(new Container(new A("Je suis ONE+")));
+        containers.add(new Container(new B("je suis TWO")));
+        containers.add(new Container(new A("Je suis ONE++")));
+        containers.add(new Container(new B("je suis TWO+")));
+        containers.add(new Container(new B("je suis TWO++")));
+        containers.add(new Container(new A("Je suis ONE3+")));
+        containers.add(new Container(new A("Je suis ONE4+")));
+        containers.add(new Container(new B("je suis TWO3+")));
+        containers.add(new Container(new B("je suis TWO4+")));
+        containers.add(new Container());
+        containers.add(new Container());
+        containers.add(new Container(new B("je suis TWO5+")));
+        containers.add(new Container());
+
+        RecyclerAdapter<Container> multiTypeAdapter = new RecyclerAdapter<>(containers, A_ViewHolder.class);
+        multiTypeAdapter.putViewType(2, B_ViewHolder.class, true);
+        multiTypeAdapter.putViewType(3, EmptyViewHolder.class, true);
+        multiTypeAdapter.setViewTypeStrategy(item -> {
+            if (item.getValue() == null) {
+                return 3;
+            }
+            return (item.getValue() instanceof A) ? 1 : 2;
+        });
+        mRecycler.setAdapter(multiTypeAdapter);
+    }
+
+    private void setSimpleMultiAdapter() {
+        List<A> list = new ArrayList();
+        list.add(new A("Alibaba"));
+        list.add(new A("Allouette "));
+
+        RecyclerAdapter<A> adapter = new RecyclerAdapter<>(list, A_ViewHolder.class);
+        adapter.putViewType(1, A_Bis_ViewHolder.class, true);
+        adapter.setViewTypeStrategy(item -> {
+            if (item.getName().length() > 7) {
+                return 1;
+            }
+            return 0;
+        });
+        mRecycler.setAdapter(adapter);
+    }
+
+
+    private void setSectionAdapter(){
+        List<A> list = new ArrayList();
+        list.add(new A("Alibaba"));
+        list.add(new A("Allouette "));
+
+        RecyclerAdapter<A> adapter = new RecyclerAdapter<>(list, A_ViewHolder.class);
+        SectionedAdapter<A, RecyclerAdapter> sectionedAdapter = new SectionedAdapter<>(A_Bis_ViewHolder.class, adapter);
+        sectionedAdapter.addSection(0, new A("SECTION ONE"));
+        sectionedAdapter.addSection(1, new A("SECTION TWO"));
+        mRecycler.setAdapter(sectionedAdapter);
+    }
 }

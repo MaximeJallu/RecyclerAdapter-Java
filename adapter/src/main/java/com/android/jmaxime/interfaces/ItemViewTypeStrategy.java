@@ -1,5 +1,5 @@
 package com.android.jmaxime.interfaces;
 
-public interface IItemViewType<T> {
+public interface ItemViewTypeStrategy<T> {
     int getItemViewType(T item);
 }

@@ -21,8 +21,9 @@ import java.util.List;
  */
 @SuppressWarnings("WeakerAccess") public class SectionedAdapter<S, A extends RecyclerView.Adapter> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final int DEFAULT_SECTION_TYPE = 0;
     private static final int SECTION_TYPE = 2312;
-    private ViewHolderFactory<S> mSectionHolderFactory;
+    private SparseArray<ViewHolderFactory<S>> mSectionHolderFactoryList;
     private SparseArray<SectionAdapter<S>> mSectionItems = new SparseArray<>();
     @NonNull
     private A mBaseAdapter;
@@ -32,8 +33,9 @@ import java.util.List;
         this(viewType, null, a);
     }
 
-    public SectionedAdapter(@NonNull Class<? extends RecyclerViewHolder<S>> viewType, @Nullable RecyclerView r, @NonNull A a) {
-        mSectionHolderFactory = new ViewHolderFactory<>(viewType);
+    public SectionedAdapter(@NonNull Class<? extends RecyclerViewHolder<S>> viewHolder, @Nullable RecyclerView r, @NonNull A a) {
+        mSectionHolderFactoryList = new SparseArray<>();
+        mSectionHolderFactoryList.append(DEFAULT_SECTION_TYPE, new ViewHolderFactory.Builder<>(viewHolder).build());
         mBaseAdapter = a;
         init(r);
     }
@@ -81,11 +83,11 @@ import java.util.List;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int typeView) {
-        if (typeView == SECTION_TYPE) {
-            return mSectionHolderFactory.createVH(parent, typeView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == SECTION_TYPE) {
+            return mSectionHolderFactoryList.get(DEFAULT_SECTION_TYPE).createVH(parent);
         } else {
-            return mBaseAdapter.onCreateViewHolder(parent, typeView - 1);
+            return mBaseAdapter.onCreateViewHolder(parent, viewType - 1);
         }
     }
 
@@ -208,16 +210,16 @@ import java.util.List;
             return mT;
         }
 
-        public void setSectionedPosition(int sectionedPosition) {
-            this.sectionedPosition = sectionedPosition;
-        }
-
         public int getFirstPosition() {
             return firstPosition;
         }
 
         public int getSectionedPosition() {
             return sectionedPosition;
+        }
+
+        public void setSectionedPosition(int sectionedPosition) {
+            this.sectionedPosition = sectionedPosition;
         }
     }
 }

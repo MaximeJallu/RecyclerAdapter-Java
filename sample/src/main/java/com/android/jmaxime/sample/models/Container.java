@@ -1,39 +1,31 @@
 package com.android.jmaxime.sample.models;
 
 import com.android.jmaxime.interfaces.IViewType;
+import com.android.jmaxime.viewholder.ContainerViewModel;
 
-public class Container extends ContainerModel implements IViewType {
-    private ObjectOne mOne;
-    private ObjectTwo mTwo;
+public class Container extends ContainerViewModel implements IViewType {
 
-    public Container(ObjectOne one) {
-        init(one, null);
+    public Container() {
+        super();
     }
 
-    public Container(ObjectTwo two) {
-        init(null, two);
+    public Container(A a) {
+        super(a);
     }
 
-    private void init(ObjectOne one, ObjectTwo two){
-        mOne = one;
-        mTwo = two;
+    public Container(B b) {
+        super(b);
     }
 
-    public ObjectOne getOne() {
-        return mOne;
-    }
-
-    public ObjectTwo getTwo() {
-        return mTwo;
-    }
-
-    @Override
-    public Object getItem() {
-        return getItemViewType() == 1 ? mOne : mTwo;
+    public A getA(){
+        return (A) getValue();
     }
 
     @Override
     public int getItemViewType() {
-        return mOne != null ? 1 : 2;
+        if (isEmpty()){
+            return 3;
+        }
+        return (getValue() instanceof A) ? 1 : 2;
     }
 }
