@@ -5,8 +5,10 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.PluralsRes;
 import android.support.annotation.StringRes;
+import android.support.annotation.UiThread;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,7 +44,7 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
     private ShowPictureDecorator mPictureDecorator;
     private IBaseCommunication mCommunication;
 
-    public RecyclerViewHolder(View itemView) {
+    public RecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
     }
 
@@ -52,6 +54,7 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         }
     }
 
+    @UiThread
     public abstract void bind(final T item);
 
     protected Context getContext() {
@@ -82,6 +85,7 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         return ContextCompat.getDrawable(getContext(), drawableResId);
     }
 
+    @UiThread
     protected final void showPicture(ImageView picture, String url) {
         if (mPictureDecorator != null) {
             mPictureDecorator.showPicture(picture, url);
@@ -92,16 +96,16 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         return isBound;
     }
 
+    public void setBound(boolean bound) {
+        isBound = bound;
+    }
+
     public void setInitViewDecorator(InitViewHolderDecorator decorator) {
         mDecorator = decorator;
     }
 
     public void setPictureDecorator(ShowPictureDecorator pictureDecorator) {
         mPictureDecorator = pictureDecorator;
-    }
-
-    public void setBound(boolean bound) {
-        isBound = bound;
     }
 
     public T getItem() {

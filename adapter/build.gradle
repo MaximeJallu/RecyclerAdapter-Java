@@ -35,13 +35,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
 }
 
-def androidSupport = '26.1.0'
+def androidSupport = '27.0.0'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

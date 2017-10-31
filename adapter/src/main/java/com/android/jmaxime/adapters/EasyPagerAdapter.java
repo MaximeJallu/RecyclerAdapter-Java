@@ -1,5 +1,6 @@
 package com.android.jmaxime.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,11 +36,11 @@ public class EasyPagerAdapter<T> extends PagerAdapter {
 
     public EasyPagerAdapter(List<T> items, Class<? extends RecyclerViewHolder<T>> viewHolder, IBaseCommunication callback) {
         mItems = items;
-        mFactory = new ViewHolderFactory<>(viewHolder, callback);
+        mFactory = new ViewHolderFactory.Builder<>(viewHolder).append(callback).build();
     }
 
-    @Override public Object instantiateItem(ViewGroup container, int position) {
-        RecyclerViewHolder<T> vh = mFactory.createVH(container, 0);
+    @Override public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        RecyclerViewHolder<T> vh = mFactory.createVH(container);
         vh.bind(mItems.get(position));
         container.addView(vh.itemView);
         return vh.itemView;
@@ -61,11 +62,11 @@ public class EasyPagerAdapter<T> extends PagerAdapter {
     }
 
     public void attachInitHolderDecorator(InitViewHolderDecorator holderDecorator) {
-        mFactory.setInitViewDecorator(holderDecorator);
+        mFactory.setHolderDecorator(holderDecorator);
     }
 
     public void attachShowPictureDecorator(ShowPictureDecorator pictureDecorator) {
-        mFactory.setShowPictureDecorator(pictureDecorator);
+        mFactory.setPictureDecorator(pictureDecorator);
     }
 
     @Override

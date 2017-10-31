@@ -1,1 +1,1 @@
-include ':adapter'
+include ':adapter', ':sample'

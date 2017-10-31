@@ -1,28 +1,36 @@
 package com.android.jmaxime.adapters;
 
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.android.jmaxime.factory.ViewHolderFactory;
 import com.android.jmaxime.interfaces.IAdapterChanged;
 import com.android.jmaxime.interfaces.IBaseCommunication;
-import com.android.jmaxime.interfaces.IItemViewType;
 import com.android.jmaxime.interfaces.IViewType;
 import com.android.jmaxime.interfaces.InitViewHolderDecorator;
+import com.android.jmaxime.interfaces.ItemViewTypeStrategy;
 import com.android.jmaxime.interfaces.ShowPictureDecorator;
+import com.android.jmaxime.viewholder.ContainerViewModel;
+import com.android.jmaxime.viewholder.EmptyRecyclerViewHolder;
 import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
 import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<T>> {
+@SuppressWarnings("unchecked")
+public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder> {
 
+    private static final int DEFAULT_VIEW_TYPE = 0;
+    private final String TAG = this.getClass().getSimpleName();
     private List<T> mTList;
-    private ViewHolderFactory<T> mViewHolderFactory;
-    private IItemViewType<T> mViewTypeStategy;
+    private SparseArray<ViewHolderFactory> mViewHolderFactory;
+    private ItemViewTypeStrategy<T> mViewTypeStrategy;
     private IAdapterChanged mAdapterChanged;
 
     public RecyclerAdapter() {
@@ -33,50 +41,62 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
         this(new ArrayList<>(), factory);
     }
 
-    public RecyclerAdapter(Class<? extends RecyclerViewHolder<T>> viewHolderType) {
+    public RecyclerAdapter(Class<? extends RecyclerViewHolder> viewHolderType) {
         this(new ArrayList<>(), viewHolderType, null);
     }
 
-    public RecyclerAdapter(Class<? extends RecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
+    public RecyclerAdapter(Class<? extends RecyclerViewHolder> viewHolderType, @Nullable IBaseCommunication callback) {
         this(new ArrayList<>(), viewHolderType, callback);
     }
 
-    public RecyclerAdapter(List<T> TList, Class<? extends RecyclerViewHolder<T>> viewHolderType) {
+    public RecyclerAdapter(List<T> TList, Class<? extends RecyclerViewHolder> viewHolderType) {
         this(TList, viewHolderType, null);
     }
 
-    public RecyclerAdapter(List<T> TList, Class<? extends RecyclerViewHolder<T>> viewHolderType, @Nullable IBaseCommunication callback) {
-        this(TList, new ViewHolderFactory<>(viewHolderType, callback));
+    public RecyclerAdapter(List<T> TList, Class<? extends RecyclerViewHolder> viewHolderType, @Nullable IBaseCommunication callback) {
+        this(TList, new ViewHolderFactory.Builder(viewHolderType).append(callback).build());
     }
-
 
     public RecyclerAdapter(List<T> TList, ViewHolderFactory<T> factory) {
         mTList = TList;
-        mViewHolderFactory = factory;
+        mViewHolderFactory = new SparseArray<>();
+        mViewHolderFactory.append(DEFAULT_VIEW_TYPE, factory);
     }
 
-    public void setFactory(ViewHolderFactory<T> factory) {
-        mViewHolderFactory = factory;
+    public void setDefaultFactory(ViewHolderFactory factory) {
+        mViewHolderFactory.append(DEFAULT_VIEW_TYPE, factory);
     }
 
     @Override
-    public RecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (mViewHolderFactory == null) {
-            throw new AccessControlException("mViewHolderFactory is not instancied. thanks use setFactory() method.");
+    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mViewHolderFactory == null || mViewHolderFactory.size() == 0) {
+            throw new AccessControlException("mViewHolderFactory is not instancied. thanks use setDefaultFactory() method.");
         }
 
-        RecyclerViewHolder<T> vh = mViewHolderFactory.createVH(parent, viewType);
+        RecyclerViewHolder vh = getViewHolderFactory(viewType).createVH(parent);
         /*used for decorator. Sample ButterKnife*/
         vh.initBinding();
         return vh;
     }
 
-
     @Override
-    public void onBindViewHolder(RecyclerViewHolder<T> holder, int position) {
-        holder.setItem(getItem(position));
+    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
+        /*change state : binding in progress*/
         holder.setBound(false);
-        holder.bind(holder.getItem());
+        /*recupération de notre viewModel*/
+        Object viewModel = getItem(position);
+        if (viewModel instanceof ContainerViewModel) {
+            viewModel = ((ContainerViewModel) viewModel).getValue();
+        }
+        /*set viewModel*/
+        holder.setItem(viewModel);
+        /*update view*/
+        if (holder instanceof EmptyRecyclerViewHolder) {
+            ((EmptyRecyclerViewHolder) holder).bind();
+        } else {
+            holder.bind(viewModel);
+        }
+        /*change state : binding finish*/
         holder.setBound(true);
     }
 
@@ -97,24 +117,60 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
 
     @Override
     public int getItemViewType(int position) {
-        if (mViewTypeStategy != null){
-            return mViewTypeStategy.getItemViewType(getItem(position));
-        }else if (getItem(position) != null && getItem(position) instanceof IViewType) {
+        if (mViewTypeStrategy != null) {
+            return mViewTypeStrategy.getItemViewType(getItem(position));
+        } else if (getItem(position) != null && getItem(position) instanceof IViewType) {
             return ((IViewType) getItem(position)).getItemViewType();
+        }
+        if (mViewHolderFactory.size() > 1){
+            Log.w(TAG, "----------------------------GENERIC--ADAPTER--WARNING----------------------------------");
+            Log.w(TAG, "in getItemViewType: It looks like you forgot to call the method \"setViewTypeStrategy\"");
         }
         return super.getItemViewType(position);
     }
 
-    public void setViewTypeFactory(IItemViewType<T> viewTypeStategy) {
-        mViewTypeStategy = viewTypeStategy;
+    /**
+     * Set the strategy for multi item type
+     * This strategy its priority on IViewType
+     * @param viewTypeStrategy strategy for multi view type holder
+     */
+    public void setViewTypeStrategy(ItemViewTypeStrategy<T> viewTypeStrategy) {
+        mViewTypeStrategy = viewTypeStrategy;
     }
 
-    public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder, boolean setDefaultCom){
-        mViewHolderFactory.putViewType(viewType, viewHolder, setDefaultCom);
+    /**
+     * @param viewType                register type
+     * @param viewHolder              attache ViewHolder at to viewType
+     * @param useDefaultConfiguration add IBaseCommunication, HeaderDecorator and PictureDecorator of Default
+     */
+    public void putViewType(@IntRange(from = 1) int viewType, @NonNull Class<? extends RecyclerViewHolder> viewHolder, boolean useDefaultConfiguration) {
+        if (useDefaultConfiguration) {
+            putViewType(viewType, viewHolder,
+                    mViewHolderFactory.get(DEFAULT_VIEW_TYPE).getCommunication(),
+                    mViewHolderFactory.get(DEFAULT_VIEW_TYPE).getHolderDecorator(),
+                    mViewHolderFactory.get(DEFAULT_VIEW_TYPE).getPictureDecorator());
+        } else {
+            putViewType(viewType, viewHolder, null, null, null);
+        }
     }
 
-    public void putViewType(int viewType, Class<? extends RecyclerViewHolder<T>> viewHolder, IBaseCommunication callback){
-        mViewHolderFactory.putViewType(viewType, viewHolder, callback);
+    public void putViewType(@IntRange(from = 1) int viewType, @NonNull Class<? extends RecyclerViewHolder> viewHolder, @Nullable IBaseCommunication communicationCallback) {
+        putViewType(viewType, viewHolder, communicationCallback, null, null);
+    }
+
+    public void putViewType(@IntRange(from = 1) int viewType, @NonNull Class<? extends RecyclerViewHolder> viewHolder,
+                            @Nullable IBaseCommunication communicationCallback,
+                            @Nullable InitViewHolderDecorator holderDecorator,
+                            @Nullable ShowPictureDecorator pictureDecorator) {
+        if (viewType == 0) {
+            throw new IllegalArgumentException("viewType must be greater than 0. Because 0 is reserved for viewHolder by default");
+        }
+        mViewHolderFactory.append(viewType,
+                new ViewHolderFactory.Builder(viewHolder)
+                        .append(communicationCallback)
+                        .append(holderDecorator)
+                        .append(pictureDecorator)
+                        .build());
     }
 
     public boolean contains(final T obj) {
@@ -131,17 +187,17 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
         mAdapterChanged = adapterChanged;
     }
 
-    public void setCommunication(IBaseCommunication communication) {
-        mViewHolderFactory.setCommunication(communication);
+    public void setCommunication(@Nullable IBaseCommunication communication) {
+        mViewHolderFactory.get(DEFAULT_VIEW_TYPE).setCallback(communication);
         notifyDataSetChanged();
     }
 
-    public void attachInitHolderDecorator(InitViewHolderDecorator holderDecorator) {
-        mViewHolderFactory.setInitViewDecorator(holderDecorator);
+    public void attachInitHolderDecorator(@Nullable InitViewHolderDecorator holderDecorator) {
+        mViewHolderFactory.get(DEFAULT_VIEW_TYPE).setHolderDecorator(holderDecorator);
     }
 
-    public void attachShowPictureDecorator(ShowPictureDecorator pictureDecorator) {
-        mViewHolderFactory.setShowPictureDecorator(pictureDecorator);
+    public void attachShowPictureDecorator(@Nullable ShowPictureDecorator pictureDecorator) {
+        mViewHolderFactory.get(DEFAULT_VIEW_TYPE).setPictureDecorator(pictureDecorator);
     }
 
     /**
@@ -150,7 +206,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
      *
      * @param item element to be inserted
      */
-    public void addItem(T item) {
+    public void addItem(@NonNull T item) {
         if (mTList != null) {
             mTList.add(item);
             notifyItemInserted(mTList.size());
@@ -164,7 +220,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
      * @param item     element to be inserted
      * @param position index at which the specified element is to be inserted
      */
-    public void addItem(T item, int position) {
+    public void addItem(@NonNull T item, @IntRange(from = 0) int position) {
         if (mTList != null) {
             position = Math.min(position, mTList.size());
             mTList.add(position, item);
@@ -192,7 +248,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
      *
      * @param item the element to be removed
      */
-    public void removeItem(T item) {
+    public void removeItem(@NonNull T item) {
         removeItem(getTList().indexOf(item));
     }
 
@@ -202,7 +258,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
      *
      * @param position the index of the element to be removed
      */
-    public void removeItem(int position) {
+    public void removeItem(@IntRange(from = 0) int position) {
         if (mTList != null && position > -1 && position < mTList.size()) {
             mTList.remove(position);
             notifyItemRemoved(position);
@@ -221,11 +277,11 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
     }
 
     /**
-     * @see List#indexOf
      * @param item find item
      * @return
+     * @see List#indexOf
      */
-    public int indexOf(T item){
+    public int indexOf(T item) {
         return getTList() != null ? getTList().indexOf(item) : -1;
     }
 
@@ -239,5 +295,13 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder<
 
     public boolean isEmpty() {
         return mTList == null || mTList.isEmpty();
+    }
+
+    private boolean containsViewType(int viewType) {
+        return mViewHolderFactory.indexOfKey(viewType) >= 0;
+    }
+
+    private ViewHolderFactory getViewHolderFactory(int viewType) {
+        return mViewHolderFactory.get(containsViewType(viewType) ? viewType : DEFAULT_VIEW_TYPE);
     }
 }
