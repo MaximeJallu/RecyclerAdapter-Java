@@ -18,7 +18,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 def isReleaseBuild() {
-    return MavenKey.VERSION_NAME.contains("SNAPSHOT") == false
+    return rootProject.ext.versionName.contains("SNAPSHOT") == false
 }
 
 def getReleaseRepositoryUrl() {
@@ -39,9 +39,8 @@ def getRepositoryPassword() {
     return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
 }
 
-MavenKey {
+def MavenKey = {
     GROUP = hasProperty('GROUP') ? GROUP : ""
-    VERSION_NAME = rootProject.ext.versionName
     POM_ARTIFACT_ID = hasProperty('POM_ARTIFACT_ID') ? POM_ARTIFACT_ID : ""
     POM_NAME = hasProperty('POM_NAME') ? POM_NAME : ""
     POM_PACKAGING = hasProperty('POM_PACKAGING') ? GROUP : ""
@@ -65,7 +64,7 @@ afterEvaluate { project ->
 
                 pom.groupId = MavenKey.GROUP
                 pom.artifactId = MavenKey.POM_ARTIFACT_ID
-                pom.version = MavenKey.VERSION_NAME
+                pom.version = rootProject.ext.versionName
 
                 repository(url: getReleaseRepositoryUrl()) {
                     authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
