@@ -1,4 +1,4 @@
-# Status of last buils
+# Status
 
 ![alt text](https://travis-ci.org/MaximeJallu/RecyclerAdapter-Java.svg?branch=develop) [![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
 
@@ -13,9 +13,19 @@ Creating sections is now very easily.
 Enjoy.
 ```
 
-# Download 
+# Download [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters)
 ```
-compile "com.github.maximejallu:adapters:1.10.2"
+buildtool used is 27
+use exclude group: 'com.android.support' if you have problems
+dependencies {
+    ...
+    compile "com.github.maximejallu:adapters:{version}"
+    or
+    implementation ('com.github.maximejallu:adapters:{version}'){
+        exclude group: 'com.android.support'
+    }
+    ...
+}
 ```
     
 # RecyclerAdapter (Easy sample method)

@@ -50,6 +50,6 @@ dependencies {
     implementation "com.android.support:design:$androidSupport"
 }
 
-if (new File('maven.gradle').exists()){
+//if (new File('maven.gradle').exists()){
     apply from: 'maven.gradle'
-}
+//}

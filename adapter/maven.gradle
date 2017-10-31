@@ -17,6 +17,21 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
+def MAVEN_GROUP = hasProperty('GROUP') ? GROUP : ""
+def MAVEN_POM_ARTIFACT_ID = hasProperty('POM_ARTIFACT_ID') ? POM_ARTIFACT_ID : ""
+def MAVEN_POM_NAME = hasProperty('POM_NAME') ? POM_NAME : ""
+def MAVEN_POM_PACKAGING = hasProperty('POM_PACKAGING') ? POM_PACKAGING : ""
+def MAVEN_POM_DESCRIPTION = hasProperty('POM_DESCRIPTION') ? POM_DESCRIPTION : ""
+def MAVEN_POM_URL = hasProperty('POM_URL') ? POM_URL : ""
+def MAVEN_POM_SCM_URL = hasProperty('POM_SCM_URL') ? POM_SCM_URL : ""
+def MAVEN_POM_SCM_CONNECTION = hasProperty('POM_SCM_CONNECTION') ? POM_SCM_CONNECTION : ""
+def MAVEN_POM_SCM_DEV_CONNECTION = hasProperty('POM_SCM_DEV_CONNECTION') ? POM_SCM_DEV_CONNECTION : ""
+def MAVEN_POM_LICENCE_NAME = hasProperty('POM_LICENCE_NAME') ? POM_LICENCE_NAME : ""
+def MAVEN_POM_LICENCE_URL = hasProperty('POM_LICENCE_URL') ? POM_LICENCE_URL : ""
+def MAVEN_POM_LICENCE_DIST = hasProperty('POM_LICENCE_DIST') ? POM_LICENCE_DIST : ""
+def MAVEN_POM_DEVELOPER_ID = hasProperty('POM_DEVELOPER_ID') ? POM_DEVELOPER_ID : ""
+def MAVEN_POM_DEVELOPER_NAME = hasProperty('POM_DEVELOPER_NAME') ? POM_DEVELOPER_NAME : ""
+
 def isReleaseBuild() {
     return rootProject.ext.versionName.contains("SNAPSHOT") == false
 }
@@ -38,21 +53,6 @@ def getRepositoryUsername() {
 def getRepositoryPassword() {
     return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
 }
-
-def MAVEN_GROUP = hasProperty('GROUP') ? GROUP : ""
-def MAVEN_POM_ARTIFACT_ID = hasProperty('POM_ARTIFACT_ID') ? POM_ARTIFACT_ID : ""
-def MAVEN_POM_NAME = hasProperty('POM_NAME') ? POM_NAME : ""
-def MAVEN_POM_PACKAGING = hasProperty('POM_PACKAGING') ? POM_PACKAGING : ""
-def MAVEN_POM_DESCRIPTION = hasProperty('POM_DESCRIPTION') ? POM_DESCRIPTION : ""
-def MAVEN_POM_URL = hasProperty('POM_URL') ? POM_URL : ""
-def MAVEN_POM_SCM_URL = hasProperty('POM_SCM_URL') ? POM_SCM_URL : ""
-def MAVEN_POM_SCM_CONNECTION = hasProperty('POM_SCM_CONNECTION') ? POM_SCM_CONNECTION : ""
-def MAVEN_POM_SCM_DEV_CONNECTION = hasProperty('POM_SCM_DEV_CONNECTION') ? POM_SCM_DEV_CONNECTION : ""
-def MAVEN_POM_LICENCE_NAME = hasProperty('POM_LICENCE_NAME') ? POM_LICENCE_NAME : ""
-def MAVEN_POM_LICENCE_URL = hasProperty('POM_LICENCE_URL') ? POM_LICENCE_URL : ""
-def MAVEN_POM_LICENCE_DIST = hasProperty('POM_LICENCE_DIST') ? POM_LICENCE_DIST : ""
-def MAVEN_POM_DEVELOPER_ID = hasProperty('POM_DEVELOPER_ID') ? POM_DEVELOPER_ID : ""
-def MAVEN_POM_DEVELOPER_NAME = hasProperty('POM_DEVELOPER_NAME') ? POM_DEVELOPER_NAME : ""
 
 afterEvaluate { project ->
     uploadArchives {
