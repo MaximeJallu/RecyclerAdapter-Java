@@ -1,9 +1,27 @@
-# SDK Version
-minSdkVersion = 16
+# Status
 
-# Gradle 
+![alt text](https://travis-ci.org/MaximeJallu/RecyclerAdapter-Java.svg?branch=develop) [![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
+
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters)
+
+# Description:
 ```
-compile "com.github.maximejallu:adapters:1.10.2"
+This tool allows you to no longer worry about adapters. Now you will only create your ViewHolder. A simple tools to take in hand that should answer all your use cases.
+Communication management between your Views & ViewHolders is possible.
+Creating sections is now very easily.
+Enjoy.
+```
+
+# Download [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters)
+buildtool used is 27
+use {exclude group: 'com.android.support'} only if you have problems
+```
+dependencies {
+    ...
+    implementation ('com.github.maximejallu:adapters:{version}')
+    ...
+}
 ```
     
 # RecyclerAdapter (Easy sample method)
@@ -111,49 +129,6 @@ sectionAdapter.addSection(0/*position*/, "Title Section 1");
 Customer i = sectionAdapter.getItem(1 /*sectioned position*/);
 
 mRecylerView.setAdapter(sectionAdapter);
-```
-
-# ArrayRecyclerAdapter (other method)
-Sample : 
-```java
-public class SampleAdapter extends ArrayRecyclerAdapter<String,SampleAdapter.ItemViewHolder> {
-
-    public SampleAdapter(@NonNull List<String> list) {
-        super(list);
-    }
-
-    @Override public SampleAdapter onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ItemViewHolder(LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.training_viewholder, parent, false));
-    }
-    /**
-     * Training ViewHolder
-     */
-    class ItemViewHolder extends RecyclerViewHolder<String> {
-
-        @BindView(R.id.training_note_label)
-        TextView mTextView;
-
-        /**
-         * This super() auto BindViews with ButterKnife<br/>
-         *
-         * @param itemView the Views holder
-         */
-        public ItemViewHolder(View itemView) {
-            super(itemView);
-        }
-
-        /**
-         * Update the view with data
-         *
-         * @param note data
-         */
-        @Override
-        public void bind(String note) {
-            mTextView.setText(note);
-        }
-    }
-}
 ```
 
 # ItemDecoration

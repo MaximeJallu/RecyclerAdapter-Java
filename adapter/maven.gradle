@@ -17,8 +17,23 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
+def MAVEN_GROUP = hasProperty('GROUP') ? GROUP : ""
+def MAVEN_POM_ARTIFACT_ID = hasProperty('POM_ARTIFACT_ID') ? POM_ARTIFACT_ID : ""
+def MAVEN_POM_NAME = hasProperty('POM_NAME') ? POM_NAME : ""
+def MAVEN_POM_PACKAGING = hasProperty('POM_PACKAGING') ? POM_PACKAGING : ""
+def MAVEN_POM_DESCRIPTION = hasProperty('POM_DESCRIPTION') ? POM_DESCRIPTION : ""
+def MAVEN_POM_URL = hasProperty('POM_URL') ? POM_URL : ""
+def MAVEN_POM_SCM_URL = hasProperty('POM_SCM_URL') ? POM_SCM_URL : ""
+def MAVEN_POM_SCM_CONNECTION = hasProperty('POM_SCM_CONNECTION') ? POM_SCM_CONNECTION : ""
+def MAVEN_POM_SCM_DEV_CONNECTION = hasProperty('POM_SCM_DEV_CONNECTION') ? POM_SCM_DEV_CONNECTION : ""
+def MAVEN_POM_LICENCE_NAME = hasProperty('POM_LICENCE_NAME') ? POM_LICENCE_NAME : ""
+def MAVEN_POM_LICENCE_URL = hasProperty('POM_LICENCE_URL') ? POM_LICENCE_URL : ""
+def MAVEN_POM_LICENCE_DIST = hasProperty('POM_LICENCE_DIST') ? POM_LICENCE_DIST : ""
+def MAVEN_POM_DEVELOPER_ID = hasProperty('POM_DEVELOPER_ID') ? POM_DEVELOPER_ID : ""
+def MAVEN_POM_DEVELOPER_NAME = hasProperty('POM_DEVELOPER_NAME') ? POM_DEVELOPER_NAME : ""
+
 def isReleaseBuild() {
-    return MavenKey.VERSION_NAME.contains("SNAPSHOT") == false
+    return rootProject.ext.versionName.contains("SNAPSHOT") == false
 }
 
 def getReleaseRepositoryUrl() {
@@ -39,33 +54,15 @@ def getRepositoryPassword() {
     return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
 }
 
-MavenKey {
-    GROUP = hasProperty('GROUP') ? GROUP : ""
-    VERSION_NAME = rootProject.ext.versionName
-    POM_ARTIFACT_ID = hasProperty('POM_ARTIFACT_ID') ? POM_ARTIFACT_ID : ""
-    POM_NAME = hasProperty('POM_NAME') ? POM_NAME : ""
-    POM_PACKAGING = hasProperty('POM_PACKAGING') ? GROUP : ""
-    POM_DESCRIPTION = hasProperty('POM_DESCRIPTION') ? POM_DESCRIPTION : ""
-    POM_URL = hasProperty('POM_URL') ? POM_URL : ""
-    POM_SCM_URL = hasProperty('POM_SCM_URL') ? POM_SCM_URL : ""
-    POM_SCM_CONNECTION = hasProperty('POM_SCM_CONNECTION') ? POM_SCM_CONNECTION : ""
-    POM_SCM_DEV_CONNECTION = hasProperty('POM_SCM_DEV_CONNECTION') ? POM_SCM_DEV_CONNECTION : ""
-    POM_LICENCE_NAME = hasProperty('POM_LICENCE_NAME') ? POM_LICENCE_NAME : ""
-    POM_LICENCE_URL = hasProperty('POM_LICENCE_URL') ? POM_LICENCE_URL : ""
-    POM_LICENCE_DIST = hasProperty('POM_LICENCE_DIST') ? POM_LICENCE_DIST : ""
-    POM_DEVELOPER_ID = hasProperty('POM_DEVELOPER_ID') ? POM_DEVELOPER_ID : ""
-    POM_DEVELOPER_NAME = hasProperty('POM_DEVELOPER_NAME') ? POM_DEVELOPER_NAME : ""
-}
-
 afterEvaluate { project ->
     uploadArchives {
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                pom.groupId = MavenKey.GROUP
-                pom.artifactId = MavenKey.POM_ARTIFACT_ID
-                pom.version = MavenKey.VERSION_NAME
+                pom.groupId = MAVEN_GROUP
+                pom.artifactId = MAVEN_POM_ARTIFACT_ID
+                pom.version = rootProject.ext.versionName
 
                 repository(url: getReleaseRepositoryUrl()) {
                     authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
@@ -75,29 +72,29 @@ afterEvaluate { project ->
                 }
 
                 pom.project {
-                    name MavenKey.POM_NAME
-                    packaging MavenKey.POM_PACKAGING
-                    description MavenKey.POM_DESCRIPTION
-                    url MavenKey.POM_URL
+                    name MAVEN_POM_NAME
+                    packaging MAVEN_POM_PACKAGING
+                    description MAVEN_POM_DESCRIPTION
+                    url MAVEN_POM_URL
 
                     scm {
-                        url MavenKey.POM_SCM_URL
-                        connection MavenKey.POM_SCM_CONNECTION
-                        developerConnection MavenKey.POM_SCM_DEV_CONNECTION
+                        url MAVEN_POM_SCM_URL
+                        connection MAVEN_POM_SCM_CONNECTION
+                        developerConnection MAVEN_POM_SCM_DEV_CONNECTION
                     }
 
                     licenses {
                         license {
-                            name MavenKey.POM_LICENCE_NAME
-                            url MavenKey.POM_LICENCE_URL
-                            distribution MavenKey.POM_LICENCE_DIST
+                            name MAVEN_POM_LICENCE_NAME
+                            url MAVEN_POM_LICENCE_URL
+                            distribution MAVEN_POM_LICENCE_DIST
                         }
                     }
 
                     developers {
                         developer {
-                            id MavenKey.POM_DEVELOPER_ID
-                            name MavenKey.POM_DEVELOPER_NAME
+                            id MAVEN_POM_DEVELOPER_ID
+                            name MAVEN_POM_DEVELOPER_NAME
                         }
                     }
                 }
