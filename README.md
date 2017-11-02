@@ -1,3 +1,7 @@
+# Status of last buils
+
+![alt text](https://travis-ci.org/MaximeJallu/RecyclerAdapter-Java.svg?branch=develop)
+
 # SDK Version
 minSdkVersion = 16
 
