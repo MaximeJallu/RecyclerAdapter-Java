@@ -1,11 +1,16 @@
 # Status of last buils
 
-![alt text](https://travis-ci.org/MaximeJallu/RecyclerAdapter-Java.svg?branch=develop)
+![alt text](https://travis-ci.org/MaximeJallu/RecyclerAdapter-Java.svg?branch=develop) [![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
 
-# SDK Version
-minSdkVersion = 16
+# Description:
+```
+This tool allows you to no longer worry about adapters. Now you will only create your ViewHolder. A simple tools to take in hand that should answer all your use cases.
+Communication management between your Views & ViewHolders is possible.
+Creating sections is now very easily.
+Enjoy.
+```
 
-# Gradle 
+# Download 
 ```
 compile "com.github.maximejallu:adapters:1.10.2"
 ```
@@ -115,49 +120,6 @@ sectionAdapter.addSection(0/*position*/, "Title Section 1");
 Customer i = sectionAdapter.getItem(1 /*sectioned position*/);
 
 mRecylerView.setAdapter(sectionAdapter);
-```
-
-# ArrayRecyclerAdapter (other method)
-Sample : 
-```java
-public class SampleAdapter extends ArrayRecyclerAdapter<String,SampleAdapter.ItemViewHolder> {
-
-    public SampleAdapter(@NonNull List<String> list) {
-        super(list);
-    }
-
-    @Override public SampleAdapter onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ItemViewHolder(LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.training_viewholder, parent, false));
-    }
-    /**
-     * Training ViewHolder
-     */
-    class ItemViewHolder extends RecyclerViewHolder<String> {
-
-        @BindView(R.id.training_note_label)
-        TextView mTextView;
-
-        /**
-         * This super() auto BindViews with ButterKnife<br/>
-         *
-         * @param itemView the Views holder
-         */
-        public ItemViewHolder(View itemView) {
-            super(itemView);
-        }
-
-        /**
-         * Update the view with data
-         *
-         * @param note data
-         */
-        @Override
-        public void bind(String note) {
-            mTextView.setText(note);
-        }
-    }
-}
 ```
 
 # ItemDecoration
