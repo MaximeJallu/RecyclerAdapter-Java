@@ -10,3 +10,11 @@ android:
     # Support library
     - extra-android-support
     - extra-android-m2repository
+
+install: true
+
+before_script:
+  - chmod +x gradlew
+
+script:
+  - ./gradlew assembleRelease --stacktrace
