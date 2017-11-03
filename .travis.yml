@@ -4,7 +4,7 @@ android:
     # Update Android SDK Tools
     - tools
 
-    - build-tools-26.0.2
+    - build-tools-27.0.0
     - android-26
 
     # Support library
