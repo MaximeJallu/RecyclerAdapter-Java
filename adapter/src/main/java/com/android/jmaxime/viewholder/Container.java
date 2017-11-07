@@ -1,14 +1,14 @@
 package com.android.jmaxime.viewholder;
 
 @SuppressWarnings("unchecked")
-public class ContainerViewModel<T>  {
-    private final T mT;
+public class Container {
+    private final Object mT;
 
-    public ContainerViewModel() {
+    public Container() {
         this(null);
     }
 
-    public ContainerViewModel(T t) {
+    public Container(Object t) {
         mT = t;
     }
 

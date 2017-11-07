@@ -12,11 +12,14 @@ import com.android.jmaxime.adapters.RecyclerAdapter;
 import com.android.jmaxime.adapters.decorators.SectionedAdapter;
 import com.android.jmaxime.sample.models.A;
 import com.android.jmaxime.sample.models.B;
-import com.android.jmaxime.sample.models.Container;
+import com.android.jmaxime.sample.models.Customer;
 import com.android.jmaxime.sample.viewholders.A_Bis_ViewHolder;
 import com.android.jmaxime.sample.viewholders.A_ViewHolder;
 import com.android.jmaxime.sample.viewholders.B_ViewHolder;
 import com.android.jmaxime.sample.viewholders.EmptyViewHolder;
+import com.android.jmaxime.sample.viewholders.customers.Customer2ViewHolder;
+import com.android.jmaxime.sample.viewholders.customers.CustomerViewHolder;
+import com.android.jmaxime.viewholder.Container;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,21 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+
+        List<Customer> customers = new ArrayList<>();
+        customers.add(new Customer("Alice"));
+        customers.add(new Customer("Béatrice"));
+        customers.add(new Customer("Mathilde"));
+
+        RecyclerAdapter<Customer> adapter = new RecyclerAdapter<>(customers, CustomerViewHolder.class);
+        adapter.putViewType(1, Customer2ViewHolder.class, false);
+        adapter.setViewTypeStrategy(item -> {
+            if (item.getName().startsWith("A")){
+                return 1;
+            }
+            return 0;
+        });
+        mRecycler.setAdapter(adapter);
     }
 
     private void setMultiAdapter() {
@@ -89,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSimpleMultiAdapter() {
-        List<A> list = new ArrayList();
+        List<A> list = new ArrayList<>();
         list.add(new A("Alibaba"));
         list.add(new A("Allouette "));
 
@@ -107,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setSectionAdapter(){
         mRecycler.getAdapter().notifyDataSetChanged();
-        List<A> list = new ArrayList();
+        List<A> list = new ArrayList<>();
         list.add(new A("Alibaba"));
         list.add(new A("Allouette "));
 

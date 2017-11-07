@@ -35,7 +35,7 @@ public class ViewHolderFactory<T> {
         mPictureDecorator = pictureDecorator;
     }
 
-    public final RecyclerViewHolder<T> createVH(@NonNull ViewGroup view) {
+    public final RecyclerViewHolder<T> createViewHolder(@NonNull ViewGroup view) {
         RecyclerViewHolder<T> viewHolder = getInstance(LayoutInflater.from(view.getContext())
                 .inflate(mLayoutResId, view, false));
         if (viewHolder != null) {
@@ -129,7 +129,7 @@ public class ViewHolderFactory<T> {
         private InitViewHolderDecorator mHolderDecorator;
         private ShowPictureDecorator mPictureDecorator;
 
-        public Builder(Class<? extends RecyclerViewHolder<T>> viewHolderType) {
+        public Builder(@NonNull Class<? extends RecyclerViewHolder<T>> viewHolderType) {
             mViewHolderType = viewHolderType;
         }
 
@@ -150,6 +150,10 @@ public class ViewHolderFactory<T> {
 
         public ViewHolderFactory<T> build() {
             return new ViewHolderFactory<>(mViewHolderType, mCallback, mHolderDecorator, mPictureDecorator);
+        }
+
+        public RecyclerViewHolder<T> createView(ViewGroup parent){
+            return build().createViewHolder(parent);
         }
     }
 }

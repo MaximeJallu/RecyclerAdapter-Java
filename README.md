@@ -5,6 +5,8 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters)
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerAdapter--Java-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6400)
+
 # Description:
 ```
 This tool allows you to no longer worry about adapters. Now you will only create your ViewHolder. A simple tools to take in hand that should answer all your use cases.

@@ -40,7 +40,7 @@ public class EasyPagerAdapter<T> extends PagerAdapter {
     }
 
     @Override public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        RecyclerViewHolder<T> vh = mFactory.createVH(container);
+        RecyclerViewHolder<T> vh = mFactory.createViewHolder(container);
         vh.bind(mItems.get(position));
         container.addView(vh.itemView);
         return vh.itemView;
