@@ -1,6 +1,5 @@
 package com.android.jmaxime.sample.viewholders;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,13 +15,11 @@ public class A_ViewHolder extends RecyclerViewHolder<A> {
 
     public A_ViewHolder(View itemView) {
         super(itemView);
-        Log.d("DEBUG", "A_ViewHolder: onCreate()");
         mTextView = itemView.findViewById(R.id.text);
     }
 
     @Override
     public void bind(A item) {
-        Log.d("DEBUG", "A_ViewHolder: bind()");
         mTextView.setText(item.getName());
     }
 }

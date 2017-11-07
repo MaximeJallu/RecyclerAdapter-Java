@@ -15,8 +15,7 @@ import com.android.jmaxime.interfaces.IViewType;
 import com.android.jmaxime.interfaces.InitViewHolderDecorator;
 import com.android.jmaxime.interfaces.ItemViewTypeStrategy;
 import com.android.jmaxime.interfaces.ShowPictureDecorator;
-import com.android.jmaxime.viewholder.ContainerViewModel;
-import com.android.jmaxime.viewholder.EmptyRecyclerViewHolder;
+import com.android.jmaxime.viewholder.Container;
 import com.android.jmaxime.viewholder.RecyclerViewHolder;
 
 import java.security.AccessControlException;
@@ -63,17 +62,13 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
         mViewHolderFactory.append(DEFAULT_VIEW_TYPE, factory);
     }
 
-    public void setDefaultFactory(ViewHolderFactory factory) {
-        mViewHolderFactory.append(DEFAULT_VIEW_TYPE, factory);
-    }
-
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mViewHolderFactory == null || mViewHolderFactory.size() == 0) {
             throw new AccessControlException("mViewHolderFactory is not instancied. thanks use setDefaultFactory() method.");
         }
 
-        RecyclerViewHolder vh = getViewHolderFactory(viewType).createVH(parent);
+        RecyclerViewHolder vh = getViewHolderFactory(viewType).createViewHolder(parent);
         /*used for decorator. Sample ButterKnife*/
         vh.initBinding();
         return vh;
@@ -81,38 +76,17 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-        /*change state : binding in progress*/
-        holder.setBound(false);
         /*recupération de notre viewModel*/
         Object viewModel = getItem(position);
-        if (viewModel instanceof ContainerViewModel) {
-            viewModel = ((ContainerViewModel) viewModel).getValue();
+        if (viewModel instanceof Container) {
+            viewModel = ((Container) viewModel).getValue();
         }
-        /*set viewModel*/
-        holder.setItem(viewModel);
-        /*update view*/
-        if (holder instanceof EmptyRecyclerViewHolder) {
-            ((EmptyRecyclerViewHolder) holder).bind();
-        } else {
-            holder.bind(viewModel);
-        }
-        /*change state : binding finish*/
-        holder.setBound(true);
+        holder.bindingSmart(viewModel);
     }
 
     @Override
     public int getItemCount() {
         return mTList != null ? mTList.size() : 0;
-    }
-
-    /**
-     * Get Item
-     *
-     * @param position position founded
-     * @return instance to position
-     */
-    public T getItem(int position) {
-        return mTList.get(position);
     }
 
     @Override
@@ -127,6 +101,22 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
             Log.w(TAG, "in getItemViewType: It looks like you forgot to call the method \"setViewTypeStrategy\"");
         }
         return super.getItemViewType(position);
+    }
+
+
+    /**
+     * Get Item
+     *
+     * @param position position founded
+     * @return instance to position
+     */
+    public T getItem(int position) {
+        return mTList.get(position);
+    }
+
+
+    public void setDefaultFactory(ViewHolderFactory factory) {
+        mViewHolderFactory.append(DEFAULT_VIEW_TYPE, factory);
     }
 
     /**

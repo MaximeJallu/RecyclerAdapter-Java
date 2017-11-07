@@ -50,14 +50,29 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
 
     public void initBinding() {
         if (mDecorator != null) {
-            mDecorator.initBinding(itemView);
+            mDecorator.initBinding(this, itemView);
         }
+    }
+
+    public final void bindingSmart(final T item){
+        /*change state : binding in progress*/
+        setBound(false);
+        /*set viewModel*/
+        setItem(item);
+        /*update view*/
+        if (this instanceof EmptyRecyclerViewHolder) {
+            ((EmptyRecyclerViewHolder) this).bind();
+        } else {
+            bind(item);
+        }
+        /*change state : binding finish*/
+        setBound(true);
     }
 
     @UiThread
     public abstract void bind(final T item);
 
-    protected Context getContext() {
+    protected final Context getContext() {
         return itemView.getContext();
     }
 
@@ -92,31 +107,31 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         }
     }
 
-    protected boolean isBound() {
+    protected final boolean isBound() {
         return isBound;
     }
 
-    public void setBound(boolean bound) {
+    private void setBound(boolean bound) {
         isBound = bound;
     }
 
-    public void setInitViewDecorator(InitViewHolderDecorator decorator) {
+    public final void setInitViewDecorator(InitViewHolderDecorator decorator) {
         mDecorator = decorator;
     }
 
-    public void setPictureDecorator(ShowPictureDecorator pictureDecorator) {
+    public final void setPictureDecorator(ShowPictureDecorator pictureDecorator) {
         mPictureDecorator = pictureDecorator;
     }
 
-    public T getItem() {
+    public final T getItem() {
         return mItem;
     }
 
-    public void setItem(T item) {
+    public final void setItem(T item) {
         mItem = item;
     }
 
-    protected <I extends IBaseCommunication> I getDispatcher() {
+    protected final <I extends IBaseCommunication> I getDispatcher() {
         I i = null;
         try {
             //noinspection unchecked
@@ -127,7 +142,7 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
         return i;
     }
 
-    public void setCommunication(IBaseCommunication interfaceCallback) {
+    public final void setCommunication(IBaseCommunication interfaceCallback) {
         mCommunication = interfaceCallback;
     }
 }
