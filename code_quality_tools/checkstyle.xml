@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+    "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
+<module name="Checker">
+    <!-- Size Violations -->
+    <module name="FileLength"/>
+
+    <!-- Whitespace -->
+    <module name="FileTabCharacter"/>
+
+    <!-- Regex -->
+    <!-- Trailing spaces -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module>
+
+    <!-- Space after 'for' and 'if' -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^\s*(for|if)\b[^ ]"/>
+        <property name="message" value="Space needed before opening parenthesis."/>
+    </module>
+
+    <module name="TreeWalker">
+        <!-- Imports -->
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports">
+            <property name="processJavadoc" value="true"/>
+        </module>
+
+        <!-- Name convention -->
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9_]*$"/>
+        </module>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName">
+            <property name="format" value="^[A-Z][a-zA-Z0-9_]*$"/>
+        </module>
+
+        <!-- Whitespace -->
+        <module name="GenericWhitespace"/>
+        <module name="EmptyForIteratorPad"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+
+        <!-- Modifier -->
+        <module name="RedundantModifier"/>
+
+        <!-- Block Checks -->
+        <module name="LeftCurly"/>
+        <module name="NeedBraces">
+            <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE"/>
+        </module>
+        <module name="RightCurly"/>
+
+        <!-- Coding -->
+        <module name="CovariantEquals"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsAvoidNull"/>
+        <module name="EqualsHashCode"/>
+        <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+
+        <!-- Class Design -->
+        <module name="HideUtilityClassConstructor"/>
+
+        <!-- Miscellaneous -->
+        <module name="ArrayTypeStyle"/>
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+    </module>
+</module>

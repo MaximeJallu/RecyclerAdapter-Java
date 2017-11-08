@@ -7,13 +7,12 @@
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerAdapter--Java-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6400)
 
-# Description:
-```
-This tool allows you to no longer worry about adapters. Now you will only create your ViewHolder. A simple tools to take in hand that should answer all your use cases.
-Communication management between your Views & ViewHolders is possible.
+# Generic-Adapter:
+
+This tool allows you to no longer worry about adapters. Now you will only create your ViewHolder.
+Communication management between your Views and your ViewHolders is possible.
 Creating sections is now very easily.
 Enjoy.
-```
 
 # Download [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters)
 buildtool used is 27
@@ -56,21 +55,11 @@ void onCreate(...){
 }
 ```
 # RecyclerAdapter (Multi cell method)
+- create your necessary ViewHolder (here only one example)
 ```java
 @BindLayoutRes(R.layout.{name_of_your_layout1})
 public class CustomerViewHolder1 extends RecyclerViewHolder<Customer> {
     CustomerViewHolder1(View view){
-        super(view);
-    }
-    
-    void onBind(Customer item){
-        //todo implements
-    }
-}
-
-@BindLayoutRes(R.layout.{name_of_your_layout2})
-public class CustomerViewHolder2 extends RecyclerViewHolder<Customer> {
-    CustomerViewHolder2(View view){
         super(view);
     }
     
@@ -111,25 +100,18 @@ public class MyFragment extends Fragment {
 
 }
 ```
-# SectionDecorator (Recycler with LinearLayout)
-precondition : create your RecyclerViewHolder
-Sample : 
-```java
-RecyclerAdapter<Customer> baseAdapter = new RecyclerAdapter<>(...);
-RecyclerSectionedAdapter adapter = new RecyclerSectionedAdapter(SectionViewHolder.class, baseAdapter);
-```
-
-# SectionDecorator (Recycler with GridLayout)
+# SectionDecorator (Recycler with LinearLayout or GridLayout)
 precondition : create your RecyclerViewHolder
 Sample : 
 ```java
 mRecylerView.setLayoutManager(...);
+/*create Adapter*/
 RecyclerAdapter<Customer> baseAdapter = new RecyclerAdapter<>(...);
-RecyclerSectionedAdapter<String, Customer> sectionAdapter = new RecyclerSectionedAdapter<>(SectionViewHolder.class, mRecylerView, baseAdapter);
-
+/*create sectioned adapter. the Adapter type can be RecyclerView.Adapter*/
+SectionedAdapter<String, RecyclerAdapter> adapter = new SectionedAdapter<>(SectionViewHolder.class, baseAdapter);
+/*add your sections*/
 sectionAdapter.addSection(0/*position*/, "Title Section 1");
-Customer i = sectionAdapter.getItem(1 /*sectioned position*/);
-
+/*attach Adapter to RecyclerView*/
 mRecylerView.setAdapter(sectionAdapter);
 ```
 
