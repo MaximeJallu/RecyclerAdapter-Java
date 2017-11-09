@@ -17,11 +17,37 @@ Enjoy.
 # Download [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.maximejallu/adapters)
 buildtool used is 27
 use {exclude group: 'com.android.support'} only if you have problems
-```
+```groovy
 dependencies {
     ...
     implementation ('com.github.maximejallu:adapters:{version}')
     ...
+}
+```
+
+# Decorators for : [ButterKnife][1] - [Picasso][2] - [Glide][3] ...
+```java
+public class SampleApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        RecyclerAdapter.Helper()
+                .append(new InitViewHolderDecorator() {
+                    @Override
+                    public void initBinding(Object target, View view) {
+                        ButterKnife.bind(target, view);
+                    }
+                })
+                .append(new ShowPictureDecorator() {
+                    @Override
+                    public void showPicture(ImageView picture, String url) {
+                        //use Picasso, Glide... Other
+                    }
+                })
+                .init();
+    }
 }
 ```
     
@@ -119,3 +145,7 @@ mRecylerView.setAdapter(sectionAdapter);
 ```java
 mRecyclerView.addItemDecoration(new FooterDecoration(getContext(), this, R.layout.item_space_80));
 ```
+
+[1]: https://github.com/JakeWharton/butterknife
+[2]: https://github.com/square/picasso
+[3]: https://github.com/bumptech/glide
