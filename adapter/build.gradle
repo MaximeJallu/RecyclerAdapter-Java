@@ -37,7 +37,7 @@ android {
     }
 }
 
-def androidSupport = '27.0.0'
+def androidSupport = '26.0.2'
 
 dependencies {
     testImplementation 'junit:junit:4.12'
@@ -45,8 +45,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    api "com.android.support:appcompat-v7:$androidSupport"
-    api "com.android.support:design:$androidSupport"
+    implementation "com.android.support:appcompat-v7:$androidSupport"
+    implementation "com.android.support:design:$androidSupport"
 }
 
 apply from: 'maven.gradle'

@@ -10,6 +10,7 @@ import android.support.annotation.PluralsRes;
 import android.support.annotation.StringRes;
 import android.support.annotation.UiThread;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -98,6 +99,12 @@ public abstract class RecyclerViewHolder<T> extends RecyclerView.ViewHolder {
 
     protected final Drawable getDrawable(@DrawableRes int drawableResId) {
         return ContextCompat.getDrawable(getContext(), drawableResId);
+    }
+
+    protected final Drawable getDrawable(@DrawableRes int drawableId, @ColorRes int colorId){
+        Drawable drawable = getDrawable(drawableId);
+        DrawableCompat.setTint(drawable.mutate(), getColor(colorId));
+        return drawable;
     }
 
     @UiThread

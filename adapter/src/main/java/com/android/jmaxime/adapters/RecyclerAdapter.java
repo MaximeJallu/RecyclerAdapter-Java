@@ -26,6 +26,8 @@ import java.util.List;
 public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder> {
 
     private static final int DEFAULT_VIEW_TYPE = 0;
+    private static InitViewHolderDecorator sHolderDecorator;
+    private static ShowPictureDecorator sPictureDecorator;
     private final String TAG = this.getClass().getSimpleName();
     private List<T> mTList;
     private SparseArray<ViewHolderFactory> mViewHolderFactory;
@@ -59,7 +61,21 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
     public RecyclerAdapter(List<T> TList, ViewHolderFactory<T> factory) {
         mTList = TList;
         mViewHolderFactory = new SparseArray<>();
+        factory.setHolderDecorator(sHolderDecorator);
+        factory.setPictureDecorator(sPictureDecorator);
         mViewHolderFactory.append(DEFAULT_VIEW_TYPE, factory);
+    }
+
+    private static void setHolderDecorator(InitViewHolderDecorator holderDecorator) {
+        sHolderDecorator = holderDecorator;
+    }
+
+    private static void setPictureDecorator(ShowPictureDecorator pictureDecorator) {
+        sPictureDecorator = pictureDecorator;
+    }
+
+    public static Helper Helper() {
+        return new Helper();
     }
 
     @Override
@@ -96,13 +112,12 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
         } else if (getItem(position) != null && getItem(position) instanceof IViewType) {
             return ((IViewType) getItem(position)).getItemViewType();
         }
-        if (mViewHolderFactory.size() > 1){
+        if (mViewHolderFactory.size() > 1) {
             Log.w(TAG, "----------------------------GENERIC--ADAPTER--WARNING----------------------------------");
             Log.w(TAG, "in getItemViewType: It looks like you forgot to call the method \"setViewTypeStrategy\"");
         }
         return super.getItemViewType(position);
     }
-
 
     /**
      * Get Item
@@ -114,7 +129,6 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
         return mTList.get(position);
     }
 
-
     public void setDefaultFactory(ViewHolderFactory factory) {
         mViewHolderFactory.append(DEFAULT_VIEW_TYPE, factory);
     }
@@ -122,6 +136,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
     /**
      * Set the strategy for multi item type
      * This strategy its priority on IViewType
+     *
      * @param viewTypeStrategy strategy for multi view type holder
      */
     public void setViewTypeStrategy(ItemViewTypeStrategy<T> viewTypeStrategy) {
@@ -275,7 +290,6 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
         return getTList() != null ? getTList().indexOf(item) : -1;
     }
 
-
     /**
      * @return instance items list
      */
@@ -293,5 +307,29 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder>
 
     private ViewHolderFactory getViewHolderFactory(int viewType) {
         return mViewHolderFactory.get(containsViewType(viewType) ? viewType : DEFAULT_VIEW_TYPE);
+    }
+
+    public static class Helper {
+
+        private InitViewHolderDecorator mInitDecorator;
+        private ShowPictureDecorator mPictureDecorator;
+
+        Helper() {
+        }
+
+        public Helper append(InitViewHolderDecorator decorator) {
+            mInitDecorator = decorator;
+            return this;
+        }
+
+        public Helper append(ShowPictureDecorator decorator) {
+            mPictureDecorator = decorator;
+            return this;
+        }
+
+        public void init() {
+            RecyclerAdapter.setHolderDecorator(mInitDecorator);
+            RecyclerAdapter.setPictureDecorator(mPictureDecorator);
+        }
     }
 }
